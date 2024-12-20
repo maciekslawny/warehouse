@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+{% load static %}
+{% static "" as staticUrl %}
+{% block content %}
+
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Operacje magazynowe</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index-panel.html">Główna</a></li>
+                <li class="breadcrumb-item active">Operacje magazynowe - Plan dnia</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+
+            <!-- Left side columns -->
+            <div class="col-lg-8">
+                <div class="row">
+
+
+                    <!-- Recent Sales -->
+                    <div class="col-12">
+                        <div class="card recent-sales ">
+
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Filter</h6>
+                                    </li>
+
+                                    <li><a class="dropdown-item" href="#">Today</a></li>
+                                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title">Plan dnia <span>| {{ selected_day }}</span></h5>
+
+                                <div class="cd-schedule cd-schedule--loading margin-top-lg margin-bottom-lg js-cd-schedule">
+                                    <div class="cd-schedule__timeline">
+                                        <ul>
+                                            <li><span>08:00</span></li>
+                                            <li><span>08:30</span></li>
+                                            <li><span>09:00</span></li>
+                                            <li><span>09:30</span></li>
+                                            <li><span>10:00</span></li>
+                                            <li><span>10:30</span></li>
+                                            <li><span>11:00</span></li>
+                                            <li><span>11:30</span></li>
+                                            <li><span>12:00</span></li>
+                                            <li><span>12:30</span></li>
+                                            <li><span>13:00</span></li>
+                                            <li><span>13:30</span></li>
+                                            <li><span>14:00</span></li>
+                                            <li><span>14:30</span></li>
+                                            <li><span>15:00</span></li>
+                                            <li><span>15:30</span></li>
+                                            <li><span>16:00</span></li>
+                                            <li><span>16:30</span></li>
+                                            <li><span>17:00</span></li>
+                                        </ul>
+                                    </div> <!-- .cd-schedule__timeline -->
+
+                                    <div class="cd-schedule__events">
+                                        <ul>
+                                            <li class="cd-schedule__group">
+                                                <div class="cd-schedule__top-info"><span><b>Poniedziałek 16-12</b></span></div>
+
+                                                <ul>
+
+                                                    {% for operation in operations_monday %}
+                                                        {% include "warehouse/operation-calendar-modal.html" %}
+                                                    {% endfor %}
+
+                                                </ul>
+                                            </li>
+                                            <li class="cd-schedule__group">
+                                                <div class="cd-schedule__top-info"><span><b>Wtorek 17-12</b></span></div>
+
+                                                <ul>
+                                                    {% for operation in operations_tuesday %}
+                                                        {% include "warehouse/operation-calendar-modal.html" %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                            <li class="cd-schedule__group">
+                                                <div class="cd-schedule__top-info"><span><b>Środa 18-12</b></span></div>
+
+                                                <ul>
+                                                    {% for operation in operations_wednesday %}
+                                                        {% include "warehouse/operation-calendar-modal.html" %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                            <li class="cd-schedule__group">
+                                                <div class="cd-schedule__top-info"><span><b>Czwartek 19-12</b></span></div>
+
+                                                <ul>
+                                                    {% for operation in operations_thursday %}
+                                                        {% include "warehouse/operation-calendar-modal.html" %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                            <li class="cd-schedule__group">
+                                                <div class="cd-schedule__top-info"><span><b>Piątek 20-12</b></span></div>
+
+                                                <ul>
+                                                    {% for operation in operations_friday %}
+                                                        {% include "warehouse/operation-calendar-modal.html" %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                    <div class="cd-schedule-modal">
+                                        <header class="cd-schedule-modal__header">
+                                            <div class="cd-schedule-modal__content">
+                                                <span class="cd-schedule-modal__date"></span>
+                                                <h3 class="cd-schedule-modal__name"></h3>
+                                            </div>
+
+                                            <div class="cd-schedule-modal__header-bg"></div>
+                                        </header>
+
+                                        <div class="cd-schedule-modal__body">
+                                            <div class="cd-schedule-modal__event-info"></div>
+                                            <div class="cd-schedule-modal__body-bg"></div>
+                                        </div>
+
+                                        <a href="#0" class="cd-schedule-modal__close text-replace">Close</a>
+                                    </div>
+
+                                    <div class="cd-schedule__cover-layer"></div>
+                                </div> <!-- .cd-schedule -->
+
+
+                            </div>
+
+                        </div>
+                    </div><!-- End Recent Sales -->
+
+
+
+                    <!-- Recent Sales -->
+                    <div class="col-12">
+                        <div class="card recent-sales overflow-auto">
+
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Filter</h6>
+                                    </li>
+
+                                    <li><a class="dropdown-item" href="#">Today</a></li>
+                                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title">Lista operacji <span>| {{ selected_day }}</span></h5>
+
+                                <table class="table table-borderless datatable">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Data</th>
+                                        <th scope="col">Spedycja</th>
+                                        <th scope="col">Rampa</th>
+                                        <th scope="col">Spedytor</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for operation in operations_all %}
+                                    <tr>
+                                        <th scope="row">{{ operation.end_time|date:"Y-m-d" }} <b> {{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></th>
+                                        <td>{{ operation.spedition_number }}</td>
+                                        <td><a href="#" class="text-primary">{{ operation.ramp_number }}</a></td>
+                                        <td>Maciej Sławnicki</td>
+
+                                        <td><span class="badge
+                                            {% if operation.status == 'pending' %}bg-warning
+                                            {% elif operation.status == 'accepted' %}bg-success
+                                            {% endif %}">
+                                            {{ operation.get_status_display }}
+                                        </span></td>
+                                    </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div><!-- End Recent Sales -->
+
+
+                </div>
+            </div><!-- End Left side columns -->
+
+            <!-- Right side columns -->
+            <div class="col-lg-4">
+
+                <!-- Calendar -->
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+
+                            <li><a class="dropdown-item" href="#">Today</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">Wybór daty</h5>
+                        <form class="row g-3" method="POST" action="/operacje/wybor">
+                                     {% csrf_token %}
+                            <div class="col-6">
+
+                                <input value="{{ selected_day }}" name="selected_date" type="date" class="form-control" id="inputEmail4">
+                            </div>
+                            <div class="col-6">
+                                        <button type="submit" class="btn btn-primary">Wybierz</button>
+                                    </div>
+                        </form>
+
+
+
+
+                    </div>
+                </div><!-- End Calendar -->
+
+
+                <!-- Zarzadzanie -->
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+
+                            <li><a class="dropdown-item" href="#">Today</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">Zarządzanie</h5>
+
+
+                            <div class="col-6">
+                                        <a href="/operacje/dodaj" class="btn btn-primary">Dodaj operację</a>
+                                    </div>
+
+
+
+
+
+                    </div>
+                </div><!-- End Calendar -->
+
+{% include "warehouse/modules/stan-magazynu.html" %}
+
+
+            </div><!-- End Right side columns -->
+
+        </div>
+    </section>
+
+    <script src="{% static 'warehouse/time-shedule/assets/js/util.js' %}"></script>
+    <!-- util functions included in the CodyHouse framework -->
+    <script src="{% static 'warehouse/time-shedule/assets/js/main.js' %}"></script>
+
+
+
+
+<!--    <script src="{% static 'warehouse/calendar/js/jquery.min.js' %}"></script>-->
+<!--    <script src="{% static 'warehouse/calendar/js/popper.js' %}"></script>-->
+<!--    <script src="{% static 'warehouse/calendar/js/bootstrap.min.js' %}"></script>-->
+<!--    <script src="{% static 'warehouse/calendar/js/main.js' %}"></script>-->
+
+
+</main><!-- End #main -->
+{% endblock %}

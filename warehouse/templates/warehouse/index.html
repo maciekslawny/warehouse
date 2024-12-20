@@ -1,0 +1,491 @@
+{% extends 'base.html' %}
+{% load static %}
+{% static "" as staticUrl %}
+{% block content %}
+
+
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Dashboard</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index-panel.html">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+ <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+          <div class="row">
+
+            <!-- Sales Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card customers-card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Czeka na akceptację <span>| Wszystkie</span></h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-exclamation-octagon"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>4</h6>
+                       <span class="text-muted small pt-2 ps-1">Twoich operacji</span>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Sales Card -->
+
+            <!-- Revenue Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card revenue-card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Wykonane operacje <span>| Wszystkie</span></h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-check2-circle"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>30</h6>
+                      <span class="text-muted small pt-2 ps-1">Twoich operacji</span>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Revenue Card -->
+
+            <!-- Customers Card -->
+            <div class="col-xxl-4 col-xl-12">
+
+              <div class="card info-card sales-card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Zaplanowane operacje <span>| Wszystkie</span></h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-truck"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>12</h6>
+                      <span class="text-muted small pt-2 ps-1">Twoich operacji</span>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div><!-- End Customers Card -->
+
+            <!-- Reports -->
+            <div class="col-12">
+              <div class="card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Przeładowane tony <span>| Wszystkie</span></h5>
+
+                  <!-- Line Chart -->
+                  <div id="reportsChart"></div>
+
+                  <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                      new ApexCharts(document.querySelector("#reportsChart"), {
+                        series: [{
+                          name: 'Laktopol',
+                          data: [700, 750, 1000, 900, 1100, 1300, 1200],
+                        }, {
+                          name: 'Erie',
+                          data: [450, 1100, 900, 1300, 1300, 1600, 1850],
+                        }, {
+                          name: 'Geti',
+                          data: [250, 450, 500, 800, 750, 950, 900]
+                        }],
+                        chart: {
+                          height: 350,
+                          type: 'area',
+                          toolbar: {
+                            show: false
+                          },
+                        },
+                        markers: {
+                          size: 4
+                        },
+                        colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                        fill: {
+                          type: "gradient",
+                          gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.3,
+                            opacityTo: 0.4,
+                            stops: [0, 90, 100]
+                          }
+                        },
+                        dataLabels: {
+                          enabled: false
+                        },
+                        stroke: {
+                          curve: 'smooth',
+                          width: 2
+                        },
+                        xaxis: {
+                          type: 'datetime',
+                          categories: ["2024-01-01T00:00:00.000Z", "2024-02-01T00:00:00.000Z", "2024-03-01T00:00:00.000Z", "2024-04-01T00:00:00.000Z", "2024-05-01T00:00:00.000Z", "2024-06-01T00:00:00.000Z", "2024-07-01T00:00:00.000Z"]
+                        },
+                        tooltip: {
+                          x: {
+                            format: 'dd/MM/yy HH:mm'
+                          },
+                        }
+                      }).render();
+                    });
+                  </script>
+                  <!-- End Line Chart -->
+
+                </div>
+
+              </div>
+            </div><!-- End Reports -->
+
+            <!-- Recent Sales -->
+            <div class="col-12">
+              <div class="card recent-sales overflow-auto">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="#">Today</a></li>
+                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Najbliższe operacje <span>| Today</span></h5>
+
+                  <table class="table table-borderless datatable">
+                    <thead>
+                      <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Spedycja</th>
+                        <th scope="col">Klient</th>
+                        <th scope="col">Spedytor</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">2024-12-11 12:00</th>
+                        <td>1234/MSL</td>
+                        <td><a href="#" class="text-primary">ERIE</a></td>
+                        <td>Maciej Sławnicki</td>
+                        <td><span class="badge bg-success">Zaakceptowane</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2024-12-11 12:00</th>
+                        <td>1234/MSL</td>
+                        <td><a href="#" class="text-primary">ERIE</a></td>
+                        <td>Maciej Sławnicki</td>
+                        <td><span class="badge bg-success">Zaakceptowane</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2024-12-11 12:00</th>
+                        <td>1234/MSL</td>
+                        <td><a href="#" class="text-primary">ERIE</a></td>
+                        <td>Maciej Sławnicki</td>
+                        <td><span class="badge bg-success">Zaakceptowane</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2024-12-11 12:00</th>
+                        <td>1234/MSL</td>
+                        <td><a href="#" class="text-primary">ERIE</a></td>
+                        <td>Maciej Sławnicki</td>
+                        <td><span class="badge bg-warning">Do akceptacji</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2024-12-11 12:00</th>
+                        <td>1234/MSL</td>
+                        <td><a href="#" class="text-primary">ERIE</a></td>
+                        <td>Maciej Sławnicki</td>
+                        <td><span class="badge bg-success">Zaakceptowane</span></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2024-12-11 12:00</th>
+                        <td>1234/MSL</td>
+                        <td><a href="#" class="text-primary">ERIE</a></td>
+                        <td>Maciej Sławnicki</td>
+                        <td><span class="badge bg-success">Zaakceptowane</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+            </div><!-- End Recent Sales -->
+
+
+
+          </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+
+                    <!-- News & Updates Traffic -->
+          <div class="card">
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body pb-0">
+              <h5 class="card-title">Aktualności <span>| Nowe</span></h5>
+
+              <div class="news">
+                <div class="post-item clearfix">
+                  <img src="{% static 'warehouse/assets-panel/img/blank-head.png' %}">
+                  <h4><a href="#">Magazyn nieczynny od 18 Grudzień!</a></h4>
+                  <p>Z powodu urlopu magazyn będzie nieczynny od 18/12/2024.</p>
+                </div>
+
+                <div class="post-item clearfix">
+                  <img src="{% static 'warehouse/assets-panel/img/blank-head.png' %}">
+                  <h4><a href="#">4 Stycznia pracujemy do 14:00</a></h4>
+                  <p>W dniu 4/01 magazyn będzie czynny do godziny 14:00.</p>
+                </div>
+
+                <div class="post-item clearfix">
+                  <img src="{% static 'warehouse/assets-panel/img/blank-head.png' %}">
+                  <h4><a href="#">Nowy numer telefonu na magazyn</a></h4>
+                  <p>Zmienił nam się numer - 555-555-555</p>
+                </div>
+
+                <div class="post-item clearfix mb-3">
+                  <img src="{% static 'warehouse/assets-panel/img/blank-head.png' %}">
+                  <h4><a href="#">W styczniu pracujemy od 9:00</a></h4>
+                  <p>W pierwszym tygodniu stycznia magazyn będzie działał w godzinach 9 - 16.</p>
+                </div>
+
+
+              </div><!-- End sidebar recent posts-->
+
+            </div>
+          </div><!-- End News & Updates -->
+
+          <!-- Recent Activity -->
+          <div class="card">
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title">Najbliższe operacje <span>| Twoje</span></h5>
+
+              <div class="activity">
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">11/12/2024 10:00</div>
+                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                  <div class="activity-content">
+                    Załadunek <a href="#" class="fw-bold text-dark">Erie</a>
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">11/12/2024 10:00</div>
+                  <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                  <div class="activity-content">
+                    Załadunek <a href="#" class="fw-bold text-dark">Laktopol</a>
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">11/12/2024 10:00</div>
+                  <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                  <div class="activity-content">
+                    Wyładunek <a href="#" class="fw-bold text-dark">Laktopol</a>
+                  </div>
+                </div><!-- End activity item-->
+
+
+              </div>
+
+            </div>
+          </div><!-- End Recent Activity -->
+
+
+
+          <!-- Website Traffic -->
+          <div class="card">
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body pb-0">
+              <h5 class="card-title">Stan magazynu <span>| Today</span></h5>
+
+              <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  echarts.init(document.querySelector("#trafficChart")).setOption({
+                    tooltip: {
+                      trigger: 'item'
+                    },
+                    legend: {
+                      top: '5%',
+                      left: 'center'
+                    },
+                    series: [{
+                      name: 'Ilość M2',
+                      type: 'pie',
+                      radius: ['40%', '70%'],
+                      avoidLabelOverlap: false,
+                      label: {
+                        show: false,
+                        position: 'center'
+                      },
+                      emphasis: {
+                        label: {
+                          show: true,
+                          fontSize: '18',
+                          fontWeight: 'bold'
+                        }
+                      },
+                      labelLine: {
+                        show: false
+                      },
+                      data: [{
+                          value: 1048,
+                          name: 'ERIE'
+                        },
+                        {
+                          value: 735,
+                          name: 'Laktopol'
+                        },
+                        {
+                          value: 580,
+                          name: 'Miody'
+                        },
+                        {
+                          value: 300,
+                          name: 'Bufor'
+                        }
+                      ]
+                    }]
+                  });
+                });
+              </script>
+
+            </div>
+          </div><!-- End Website Traffic -->
+
+
+
+        </div><!-- End Right side columns -->
+
+      </div>
+    </section>
+
+
+    </main><!-- End #main -->
+
+
+{% endblock %}

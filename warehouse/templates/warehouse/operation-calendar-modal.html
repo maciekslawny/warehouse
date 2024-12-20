@@ -1,0 +1,161 @@
+<li class="cd-schedule__event">
+    <a data-start='{{ operation.start_time|date:"H:i" }}' data-end='{{ operation.end_time|date:"H:i" }}'
+       data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ operation.id }}"
+       {% if operation.status == 'accepted' %}
+    data-content="event-yoga-1" data-event="event-3"
+    {% elif operation.status == 'pending' %}
+    data-content="event-restorative-yoga" data-event="event-4"
+    {% endif %}
+    href="#0">
+    <em class="cd-schedule__name">{{ operation.get_operation_type_display }} | 40 ton | {{ operation.spedition_number }}</em>
+
+
+    <!-- Button trigger modal -->
+    <a type="button" class="invisible" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ operation.id }}">
+        Launch static backdrop modal 2
+    </a>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop{{ operation.id }}" data-bs-backdrop="static" data-bs-keyboard="false"
+         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                        {{ operation.get_operation_type_display }} | {{ operation.end_time|date:"Y-m-d" }} {{ operation.start_time|date:"H:i" }} </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row"><b>Data operacji</b></th>
+                            <td>{{ operation.end_time|date:"Y-m-d" }} | <b> {{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>Rodzaj operacji</b></th>
+                            <td>{{ operation.get_operation_type_display }}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>Numer rampy</b></th>
+                            <td colspan="2">{{ operation.get_ramp_number_display }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>Klient</b></th>
+                            <td colspan="2">{{ operation.get_customer_display }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>Towar</b></th>
+                            <td colspan="2">Mleko w proszku</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>Notatka</b></th>
+                            <td colspan="2">-</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>CUT OFF CY</b></th>
+                            <td>{{ operation.cut_off|date:"Y-m-d" }} <b> {{ operation.cut_off|date:"H:i" }}</td>
+
+                        </tr>
+
+                        <tr {% if operation.status == "pending" %} class="table-warning" {% elif operation.status == "accepted" %} class="table-success" {% endif %}>
+                            <th scope="row"><b>Status</b></th>
+                            <td colspan="2">{{ operation.get_status_display }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    {% if operation.status == 'pending' and user.role == 'magazynier' %}
+                    <div class="border-top border-1 pt-2 w-100">
+                        <b class="">POLE AKCEPTACJI</b>
+
+
+                        <form class="row g-3 " method="POST"
+                              action="/operacje/akceptacja/{{ operation.pk }}">
+                            {% csrf_token %}
+                            <div class="col-5">
+
+                                <input value="{{ operation.start_time|date:"Y-m-d" }}T{{ operation.start_time|date:"H:i" }}"
+                                       name="acceptation_datetime"
+                                       type="datetime-local"
+                                       class="form-control"
+
+                                       id="inputEmail4">
+                            </div>
+
+                            <div class="col-4">
+
+                                <select id="inputState"
+                                        class="form-select"
+                                        name="ramp_number">
+                                    <option>Wybór rampy..</option>
+                                    <option {% if operation.ramp_number == 'ramp1' %}selected {% endif %} value="ramp1">Rampa
+                                    1
+                                    </option>
+                                    <option {% if operation.ramp_number == 'ramp2' %}selected {% endif %} value="ramp2">Rampa 2
+                                    </option>
+                                    <option {% if operation.ramp_number == 'ramp3' %}selected {% endif %} value="ramp3">Rampa 3
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <button type="submit"
+                                        class="btn btn-outline-success">
+                                    Akceptuj
+                                </button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    {% if operation.status == "accepted" and user.role == 'magazynier' %}
+
+                    <form method="POST"
+                          action="/operacje/akceptacja-cofniecie/{{ operation.pk }}">
+                        {% csrf_token %}
+
+
+                        <button type="submit"
+                                class="btn btn-warning">
+                            Cofnij akceptację
+                        </button>
+
+
+                    </form>
+
+
+                    {% endif %}
+
+
+                    <form method="POST"
+                          action="/operacje/{{ operation.pk }}">
+                        {% csrf_token %}
+
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Karta operacji
+                        </button>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </a>
+</li>
