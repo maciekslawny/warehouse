@@ -60,6 +60,7 @@
                             <th scope="row"><b>Notatka</b></th>
                             <td colspan="2">-</td>
                         </tr>
+<!--                        <tr {% if operation.cut_off <= operation.end_time %} class='bg-danger' {% endif %}>-->
                         <tr>
                             <th scope="row"><b>CUT OFF CY</b></th>
                             <td>{{ operation.cut_off|date:"Y-m-d" }} <b> {{ operation.cut_off|date:"H:i" }}</td>
@@ -78,6 +79,8 @@
                         <b class="">POLE AKCEPTACJI</b>
 
 
+
+                        <div id="warning-div" class="alert alert-danger pt-2 pb-2 mt-2 mb-2" role="alert"><b>Uwaga! Zakończenie operacji jest po CUT OFF CY.</b></div>
                         <form class="row g-3 " method="POST"
                               action="/operacje/akceptacja/{{ operation.pk }}">
                             {% csrf_token %}
@@ -90,6 +93,8 @@
 
                                        id="inputEmail4">
                             </div>
+
+
 
                             <div class="col-4">
 
@@ -159,3 +164,35 @@
     </div>
     </a>
 </li>
+
+
+<script>
+    // Replace this with the CUT_OFF value from the backend, e.g., via a template tag.
+    const CUT_OFF = new Date("{{ operation.cut_off|date:'Y-m-d' }}T{{ operation.cut_off|date:'H:i' }}");
+
+    const inputField = document.getElementById('inputEmail4');
+    const warningDiv = document.getElementById('warning-div');
+
+    warningDiv.style.display = 'none';
+
+    // Function to check if input value is greater than or equal to CUT_OFF
+    function checkInputValue() {
+        const inputValue = new Date(inputField.value);
+        console.log("Selected date and time:", inputField.value, CUT_OFF);
+
+        // Check if the selected date is greater than or equal to CUT_OFF
+        if (inputValue >= CUT_OFF) {
+            warningDiv.style.display = 'block';
+        } else {
+            warningDiv.style.display = 'none';
+        }
+    }
+
+    // Check the value on page load
+    checkInputValue();
+
+    // Add event listener to handle input changes
+    inputField.addEventListener('input', () => {
+        checkInputValue();
+    });
+</script>

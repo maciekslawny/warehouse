@@ -16,6 +16,13 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='spedytor')
 
 
+class DayAlert(models.Model):
+    message = models.TextField()
+    date = models.DateField()
+    added_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.date)
 
 class Operation(models.Model):
     OPERATION_CHOICES = [
@@ -92,6 +99,9 @@ class Operation(models.Model):
 
         print('Czas trwania w sekundach:', duration_seconds)
         return int(duration_seconds)
+
+
+
 
 
 class Photo(models.Model):

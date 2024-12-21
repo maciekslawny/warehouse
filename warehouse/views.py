@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.shortcuts import render, redirect
-from .models import Operation, Photo, CustomUser
+from .models import Operation, Photo, CustomUser, DayAlert
 from django.utils.dateparse import parse_datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -15,7 +15,7 @@ from django.core.files.base import ContentFile
 
 from django.http import HttpResponse
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import landscape, A4
+from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import cm
@@ -23,8 +23,22 @@ from .models import Operation
 
 def home(request):
 
-    context = {}
 
+
+
+
+    if request.user.role == 'spedytor':
+        next_operations = Operation.objects.filter(user=request.user ,start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
+        'start_time')[:5]
+    else:
+        next_operations = Operation.objects.filter(start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
+            'start_time')[:5]
+
+
+    context = {
+        'next_operations': next_operations,
+
+    }
     return render(request, 'warehouse/index.html', context)
 
 
@@ -62,6 +76,8 @@ def accounts(request, input_date=datetime.now().strftime("%Y-%m-%d")):
 def operations(request, input_date=datetime.now().strftime("%Y-%m-%d")):
     input_date = datetime.strptime(input_date, '%Y-%m-%d').date()
     print(input_date)
+    alerts = DayAlert.objects.filter(date=input_date)
+    print('alerts',alerts)
 
 
 
@@ -69,6 +85,7 @@ def operations(request, input_date=datetime.now().strftime("%Y-%m-%d")):
                'operations_ramp1': Operation.objects.filter(start_time__date=input_date, ramp_number='ramp1'),
                'operations_ramp2': Operation.objects.filter(start_time__date=input_date, ramp_number='ramp2'),
                'operations_ramp3': Operation.objects.filter(start_time__date=input_date, ramp_number='ramp3'),
+               'alerts': alerts,
                'selected_day': str(input_date),
 
 
@@ -127,11 +144,21 @@ def operation_detail(request, operation_pk):
         image = request.FILES['image']
         Photo.objects.create(image=image)
 
-    photos = Photo.objects.all()
+    photos = Photo.objects.filter(operation=Operation.objects.get(pk=operation_pk))
+
+    if request.user.role == 'spedytor':
+        next_operations = Operation.objects.filter(user=request.user,
+                                                   start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
+            'start_time')[:5]
+    else:
+        next_operations = Operation.objects.filter(start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
+            'start_time')[:5]
+
 
     context = {
                 'operation': Operation.objects.get(pk=operation_pk),
-                'photos': photos
+                'photos': photos,
+                'next_operations': next_operations,
                }
 
     return render(request, 'warehouse/operation-card.html', context)
@@ -298,15 +325,6 @@ def delete_photo(request, photo_pk):
         photo.delete()
 
     return redirect(f'/operacje/{operation_pk}')
-
-
-from django.http import HttpResponse
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import cm
-from .models import Operation
 
 
 def generate_pdf(request):

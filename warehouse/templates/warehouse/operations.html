@@ -23,6 +23,15 @@
             <div class="col-lg-8">
                 <div class="row">
 
+                    {% if alerts %}
+                    <div class="col-12">
+                        {% for alert in alerts %}
+                        <div class="alert alert-danger" role="alert">
+                            <b>{{ alert.message }}</b>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
 
                     <!-- Recent Sales -->
                     <div class="col-12">

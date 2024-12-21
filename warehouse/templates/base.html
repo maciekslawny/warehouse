@@ -1372,50 +1372,47 @@
         </li><!-- End Dashboard Nav -->
 
 
-        {% for key, value in sidebar_destinations.items %}
-            <a class="nav-link active {% if key.name == departure_city %}{% else %}collapsed{% endif %}" data-bs-target="#tables-nav-{{ key }}" data-bs-toggle="collapse" href="#" aria-expanded="false">
-                <i class="bi bi-airplane-fill"></i><span>{{ key }}</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
+
+        <li class="nav-heading">OPERACJE</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#operation-tables-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Lista Operacji</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="tables-nav-{{ key }}" class="nav-content {% if key.name == departure_city %}{% else %}collapse{% endif %}" data-bs-parent="#sidebar-nav-{{ key }}">
-                {% for arrival_city_value in value %}
-                <li>
-                    <a href="/destination/{{ key }}/{{ arrival_city_value }}" {% if arrival_city_value.name == arrival_city and key.name == departure_city %} class="active" {% endif %}>
-                        <i class="bi bi-circle"></i><span>{{ arrival_city_value }}</span>
-                    </a>
-                </li>
-                {% endfor %}
+            <ul id="operation-tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/operacje/moje">
+                  <i class="bi bi-circle"></i><span>Moje Operacje</span>
+                </a>
 
+              </li>
+              <li>
+                <a href="/operacje/wszystkie">
+                  <i class="bi bi-circle"></i><span>Wszystkie Operacje</span>
+                </a>
+              </li>
             </ul>
+        </li><!-- End Tables Nav -->
 
-        {% endfor %}
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#operation-calendar-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-layout-text-window-reverse"></i><span>Kalendarz Operacji</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="operation-calendar-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="/operacje/dzien">
+                  <i class="bi bi-circle"></i><span>Kalendarz Dzień</span>
+                </a>
 
-          <li class="nav-heading">OPERACJE</li>
+              </li>
+              <li>
+                <a href="/operacje/tydzien">
+                  <i class="bi bi-circle"></i><span>Kalendarz Tydzień</span>
+                </a>
+              </li>
+            </ul>
+        </li><!-- End Tables Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="/operacje/moje">
-          <i class="bi bi-person"></i>
-          <span>Moje Operacje</span>
-        </a>
-      </li><!-- End Profile Page Nav -->
-            <li class="nav-item">
-        <a class="nav-link collapsed" href="/operacje/wszystkie">
-          <i class="bi bi-person"></i>
-          <span>Wszystkie Operacje</span>
-        </a>
-      </li><!-- End Profile Page Nav -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="/operacje/dzien">
-          <i class="bi bi-person"></i>
-          <span>Kalendarz - Dzień</span>
-        </a>
-      </li><!-- End Profile Page Nav -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="/operacje/tydzien">
-          <i class="bi bi-person"></i>
-          <span>Kalendarz - Tydzień</span>
-        </a>
-      </li><!-- End Profile Page Nav -->
+
         <li class="nav-heading">Statystyki</li>
 
       <li class="nav-item">
