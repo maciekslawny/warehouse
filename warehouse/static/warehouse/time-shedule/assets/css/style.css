@@ -3765,13 +3765,15 @@ a {
     text-decoration: none;
     padding: 0;
     margin: 0;
+    font-weight: bold;
+
 }
 
 .cd-schedule__event a::before {
     content: attr(data-start) " - " attr(data-end);
-
     padding: 0;
     margin: 0;
+    font-size: 14px;
 }
 
 @media (min-width: 48rem) {
@@ -3797,8 +3799,10 @@ a {
         padding: 0em;
         padding: var(--space-sm);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), inset 0 -3px 0 rgba(0, 0, 0, 0.2);
-        padding: 0.4rem;
+        padding: 0.1rem;
         margin: 0;
+        font-size: 14px;
+
     }
 }
 
@@ -3810,7 +3814,7 @@ a {
     }
 
     .js .cd-schedule--loading .cd-schedule__event {
-        opacity: 0
+        opacity: 0;
         padding: 0;
         margin: 0;
     }
@@ -3842,6 +3846,9 @@ a {
     .cd-schedule__name,
     .cd-schedule-modal__name {
         font-size: 0.8em;
+        color: white;
+        opacity: 1;
+        font-weight: 600;
     }
 }
 
@@ -3855,12 +3862,14 @@ a {
 
 @media (min-width: 64rem) {
     .cd-schedule-modal__date, .cd-schedule__event a::before {
-        font-size: 0.72916em;
-        font-size: calc(var(--text-xs) * 1.05);
+        font-size: 14px;
+        font-weight: bold;
+        color: #ffffff;
         margin-bottom: 0.125em;
         margin-bottom: var(--space-xxxxs);
         padding: 0;
         margin: 0;
+        opacity: 1; /* Pełne krycie */
     }
 }
 

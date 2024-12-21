@@ -12,12 +12,10 @@ services:
       - DOCKER_BUILDKIT=0
     volumes:
       - .:/app
-    networks:
-      - webnet
+
 
   nginx:
     image: nginx:latest
-    container_name: nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - /etc/ssl/certs/certificate.cert:/etc/ssl/certs/certificate.cert
@@ -28,8 +26,4 @@ services:
       - "443:443"
     depends_on:
       - web
-    networks:
-      - webnet
 
-networks:
-  webnet:
