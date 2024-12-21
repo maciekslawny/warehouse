@@ -3742,6 +3742,7 @@ a {
 }
 
 .cd-schedule__event {
+
     -ms-flex-negative: 0;
     flex-shrink: 0;
     float: left;
@@ -3750,7 +3751,9 @@ a {
     max-width: 300px;
     margin-right: 1.25em;
     margin-right: var(--space-md);
-    transition: opacity .2s, background .2s
+    transition: opacity .2s, background .2s;
+    padding: 0;
+    margin: 0;
 }
 
 .cd-schedule__event a {
@@ -3759,16 +3762,23 @@ a {
     padding: 0.75em;
     padding: var(--space-sm);
     box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.2);
-    text-decoration: none
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
 }
 
 .cd-schedule__event a::before {
-    content: attr(data-start) " - " attr(data-end)
+    content: attr(data-start) " - " attr(data-end);
+
+    padding: 0;
+    margin: 0;
 }
 
 @media (min-width: 48rem) {
     .js .cd-schedule__event {
-        width: 40%
+        width: 40%;
+        padding: 0;
+        margin: 0;
     }
 }
 
@@ -3778,51 +3788,69 @@ a {
         width: calc(100% + 2px);
         left: -1px;
         max-width: none;
-        margin-right: 0
+        margin-right: 0;
+        padding: 0;
+        margin: 0;
     }
 
     .js .cd-schedule__event a {
-        padding: 0.75em;
+        padding: 0em;
         padding: var(--space-sm);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), inset 0 -3px 0 rgba(0, 0, 0, 0.2)
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+        padding: 0.4rem;
+        margin: 0;
     }
 }
 
 @media (min-width: 64rem) {
     .js .cd-schedule__event--selected {
-        visibility: hidden
+        visibility: hidden;
+        padding: 0;
+        margin: 0;
     }
 
     .js .cd-schedule--loading .cd-schedule__event {
         opacity: 0
+        padding: 0;
+        margin: 0;
     }
 }
-
-.cd-schedule__name, .cd-schedule__event a::before, .cd-schedule-modal__name, .cd-schedule-modal__date {
+.cd-schedule__name,
+.cd-schedule__event a::before,
+.cd-schedule-modal__name,
+.cd-schedule-modal__date {
     display: block;
     color: hsl(0, 0%, 100%);
     color: var(--color-white);
     font-weight: bold;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1;
+    white-space: pre-wrap;
+    padding: 0;
+    margin: 0;
 }
 
-.cd-schedule__name, .cd-schedule-modal__name {
-    font-size: 1.44em;
-    font-size: var(--text-lg)
+
+
+.cd-schedule__name,
+.cd-schedule-modal__name {
+    font-size: 0.8em;
 }
 
 @media (min-width: 64rem) {
-    .cd-schedule__name, .cd-schedule-modal__name {
-        font-size: 1em;
-        font-size: calc(var(--text-sm) * 1.2)
+    .cd-schedule__name,
+    .cd-schedule-modal__name {
+        font-size: 0.8em;
     }
 }
 
 .cd-schedule-modal__date, .cd-schedule__event a::before {
     opacity: .7;
     margin-bottom: 0.25em;
-    margin-bottom: var(--space-xxxs)
+    margin-bottom: var(--space-xxxs);
+    padding: 0;
+    margin: 0;
 }
 
 @media (min-width: 64rem) {
@@ -3830,7 +3858,9 @@ a {
         font-size: 0.72916em;
         font-size: calc(var(--text-xs) * 1.05);
         margin-bottom: 0.125em;
-        margin-bottom: var(--space-xxxxs)
+        margin-bottom: var(--space-xxxxs);
+        padding: 0;
+        margin: 0;
     }
 }
 
