@@ -20,6 +20,8 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import cm
 from .models import Operation
+from django.utils import timezone
+
 
 def home(request):
 
@@ -73,9 +75,10 @@ def accounts(request, input_date=datetime.now().strftime("%Y-%m-%d")):
 
 
 
-def operations(request, input_date=datetime.now().strftime("%Y-%m-%d")):
+def operations(request, input_date=None):
+    if not input_date:
+        input_date = timezone.now().strftime("%Y-%m-%d")
     input_date = datetime.strptime(input_date, '%Y-%m-%d').date()
-    print(input_date)
     alerts = DayAlert.objects.filter(date=input_date)
     print('alerts',alerts)
 
