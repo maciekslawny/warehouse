@@ -133,6 +133,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'warehouse.CustomUser'
 
 
-LOGIN_URL = '/login/'  # URL do logowania
+LOGIN_URL = '/zaloguj'
 LOGIN_REDIRECT_URL = '/'  # URL po zalogowaniu
-LOGOUT_REDIRECT_URL = '/login/'  # URL po wylogowaniu
+LOGOUT_REDIRECT_URL = '/zaloguj'  # URL po wylogowaniu

@@ -48,7 +48,7 @@
                       <i class="bi bi-exclamation-octagon"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>4</h6>
+                      <h6>{{ pending_operations_amount }}</h6>
                        <span class="text-muted small pt-2 ps-1">Twoich operacji</span>
 
                     </div>
@@ -83,7 +83,7 @@
                       <i class="bi bi-check2-circle"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>30</h6>
+                      <h6>{{ past_operations_amount }}</h6>
                       <span class="text-muted small pt-2 ps-1">Twoich operacji</span>
 
                     </div>
@@ -119,7 +119,7 @@
                       <i class="bi bi-truck"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>12</h6>
+                      <h6>{{ next_operations_amount }}</h6>
                       <span class="text-muted small pt-2 ps-1">Twoich operacji</span>
 
                     </div>
@@ -320,30 +320,17 @@
             <div class="card-body pb-0">
               <h5 class="card-title">Aktualności <span>| Nowe</span></h5>
 
-              <div class="news">
+              <div class="news pb-2">
+
+                {% for announcement in announcements %}
                 <div class="post-item clearfix">
                   <img src="{% static 'warehouse/assets-panel/img/blank-head.png' %}">
-                  <h4><a href="#">Magazyn nieczynny od 18 Grudzień!</a></h4>
-                  <p>Z powodu urlopu magazyn będzie nieczynny od 18/12/2024.</p>
+                  <h4><a href="#">{{ announcement.title }}</a></h4>
+                  <p>{{ announcement.message }}</p>
                 </div>
 
-                <div class="post-item clearfix">
-                  <img src="{% static 'warehouse/assets-panel/img/blank-head.png' %}">
-                  <h4><a href="#">4 Stycznia pracujemy do 14:00</a></h4>
-                  <p>W dniu 4/01 magazyn będzie czynny do godziny 14:00.</p>
-                </div>
+                {% endfor %}
 
-                <div class="post-item clearfix">
-                  <img src="{% static 'warehouse/assets-panel/img/blank-head.png' %}">
-                  <h4><a href="#">Nowy numer telefonu na magazyn</a></h4>
-                  <p>Zmienił nam się numer - 555-555-555</p>
-                </div>
-
-                <div class="post-item clearfix mb-3">
-                  <img src="{% static 'warehouse/assets-panel/img/blank-head.png' %}">
-                  <h4><a href="#">W styczniu pracujemy od 9:00</a></h4>
-                  <p>W pierwszym tygodniu stycznia magazyn będzie działał w godzinach 9 - 16.</p>
-                </div>
 
 
               </div><!-- End sidebar recent posts-->

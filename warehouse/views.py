@@ -1,12 +1,12 @@
 from datetime import datetime, timedelta
 
 from django.shortcuts import render, redirect
-from .models import Operation, Photo, CustomUser, DayAlert
-from django.utils.dateparse import parse_datetime
+from .models import Operation, Photo, CustomUser, DayAlert, Announcement
+from django.utils.dateparse import parse_datetime, parse_date
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 
 from .models import Photo
 from PIL import Image
@@ -23,25 +23,50 @@ from .models import Operation
 from django.utils import timezone
 
 
+@login_required
 def home(request):
 
-
-
-
+    date_today = datetime.now().strftime("%Y-%m-%d")
 
     if request.user.role == 'spedytor':
-        next_operations = Operation.objects.filter(user=request.user ,start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
-        'start_time')[:5]
+        next_operations = Operation.objects.filter(user=request.user ,start_time__date__gte=date_today).order_by(
+        'start_time')
+        past_operations_amount = len(Operation.objects.filter(user=request.user, start_time__date__lt=date_today).order_by(
+            'start_time'))
+        next_operations_amount = len(next_operations)
+        pending_operations_amount = len(Operation.objects.filter(user=request.user, status='pending'))
     else:
-        next_operations = Operation.objects.filter(start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
-            'start_time')[:5]
+        next_operations = Operation.objects.filter(start_time__date__gte=date_today).order_by(
+            'start_time')
+        past_operations_amount = len(Operation.objects.filter(start_time__date__lt=date_today).order_by(
+            'start_time'))
+        next_operations_amount = len(next_operations)
+        pending_operations_amount = len(Operation.objects.filter(status='pending'))
+
 
 
     context = {
-        'next_operations': next_operations,
+        'next_operations': next_operations[:5],
+        'past_operations_amount': past_operations_amount,
+        'next_operations_amount': next_operations_amount,
+        'pending_operations_amount': pending_operations_amount,
+        'announcements': Announcement.objects.all().order_by('-created_datetime'),
 
     }
     return render(request, 'warehouse/index.html', context)
+
+@login_required
+def statistics(request):
+
+
+
+
+
+    context = {
+
+    }
+    return render(request, 'warehouse/statistics.html', context)
+
 
 
 
@@ -62,7 +87,7 @@ def logout_view(request):
     logout(request)  # Wylogowanie użytkownika
     return redirect('/zaloguj')  # Przekierowanie na stronę logowania lub inną stronę
 
-
+@login_required
 def accounts(request, input_date=datetime.now().strftime("%Y-%m-%d")):
     users = CustomUser.objects.all()
 
@@ -74,7 +99,121 @@ def accounts(request, input_date=datetime.now().strftime("%Y-%m-%d")):
     return render(request, 'warehouse/accounts.html', context)
 
 
+@login_required
+def announcements(request):
+    announcements = Announcement.objects.all().order_by('-created_datetime')
 
+    context = {'announcements': announcements,
+               }
+
+    return render(request, 'warehouse/announcements.html', context)
+
+
+def announcement_edit(request, announcement_pk):
+    announcement = Announcement.objects.get(pk=announcement_pk)
+
+
+    if request.method == "POST":
+        announcement_title = request.POST['announcement_title']
+        announcement.title = announcement_title
+        announcement_message = request.POST['announcement_message']
+        announcement.message = announcement_message
+        announcement.save()
+
+    context = {}
+
+
+    return redirect(f'/komunikaty')
+
+
+def announcement_delete(request, announcement_pk):
+    announcement = Announcement.objects.get(pk=announcement_pk)
+    announcement.delete()
+
+    return redirect(f'/komunikaty')
+
+
+def announcement_add(request):
+
+
+
+    if request.method == "POST":
+        announcement_title = request.POST['announcement_title']
+        announcement_message = request.POST['announcement_message']
+        announcement_added_by = request.user
+
+        announcement = Announcement(title=announcement_title,
+                                    message=announcement_message, added_by=announcement_added_by)
+        announcement.save()
+
+    context = {}
+
+
+    return redirect(f'/komunikaty')
+
+
+@login_required
+def day_alerts(request):
+    day_alerts = DayAlert.objects.all().order_by('-date')
+
+    context = {'day_alerts': day_alerts,
+               }
+
+    return render(request, 'warehouse/day-alerts.html', context)
+
+
+def day_alert_edit(request, day_alert_pk):
+    day_alert = DayAlert.objects.get(pk=day_alert_pk)
+
+
+    if request.method == "POST":
+        day_alert_message = request.POST['day_alert_message']
+        day_alert.message = day_alert_message
+        day_alert_date = request.POST['day_alert_date']
+        day_alert.date = parse_date(day_alert_date)
+        day_alert.save()
+
+    context = {}
+
+
+    return redirect(f'/alerty')
+
+
+def day_alert_delete(request, day_alert_pk):
+    day_alert = DayAlert.objects.get(pk=day_alert_pk)
+    day_alert.delete()
+
+    return redirect(f'/alerty')
+
+
+def day_alert_add(request):
+
+
+
+    if request.method == "POST":
+        day_alert_message = request.POST['day_alert_message']
+        day_alert_date = parse_date(request.POST['day_alert_date'])
+        day_alert_added_by = request.user
+
+        day_alert = DayAlert(date= day_alert_date,
+                                    message=day_alert_message, added_by=day_alert_added_by)
+        day_alert.save()
+
+    context = {}
+
+
+    return redirect(f'/alerty')
+
+
+
+
+
+
+
+
+
+
+@login_required
 def operations(request, input_date=None):
     if not input_date:
         input_date = timezone.now().strftime("%Y-%m-%d")
@@ -97,6 +236,7 @@ def operations(request, input_date=None):
     return render(request, 'warehouse/operations.html', context)
 
 
+@login_required
 def my_operations(request):
 
 
@@ -107,6 +247,8 @@ def my_operations(request):
 
     return render(request, 'warehouse/my-operations.html', context)
 
+
+@login_required
 def all_operations(request):
 
 
@@ -117,7 +259,7 @@ def all_operations(request):
 
     return render(request, 'warehouse/all-operations.html', context)
 
-
+@login_required
 def operations_week(request, input_date=datetime.now().strftime("%Y-%m-%d")):
     input_date = datetime.strptime(input_date, '%Y-%m-%d').date()
     print(input_date)
@@ -140,7 +282,7 @@ def operations_week(request, input_date=datetime.now().strftime("%Y-%m-%d")):
 
     return render(request, 'warehouse/operations-week.html', context)
 
-
+@login_required
 def operation_detail(request, operation_pk):
 
     if request.method == 'POST' and request.FILES.get('image'):
@@ -166,7 +308,7 @@ def operation_detail(request, operation_pk):
 
     return render(request, 'warehouse/operation-card.html', context)
 
-
+@login_required
 def operation_add(request):
 
     context = {'today_date': datetime.now().strftime("%Y-%m-%d")}
@@ -192,7 +334,7 @@ def operation_add(request):
 
     return render(request, 'warehouse/operation-add.html', context)
 
-
+@login_required
 def operation_edit(request, operation_pk):
 
     operation = Operation.objects.get(pk=operation_pk)
@@ -351,7 +493,7 @@ def generate_pdf(request):
     subtitle_style.alignment = 1  # Wyśrodkowanie
 
     # Dodanie dużego nagłówka
-    title = Paragraph("Zestawienie operacji załadunkowych i wyładunkowych", title_style)
+    title = Paragraph("Zestawienie operacji zaladunkowych i wyladunkowych", title_style)
     elements.append(title)
     elements.append(Spacer(1, 20))
 

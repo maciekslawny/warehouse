@@ -101,7 +101,11 @@ class Operation(models.Model):
         return int(duration_seconds)
 
 
-
+class Announcement(models.Model):
+    title = models.TextField()
+    message = models.TextField()
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    added_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class Photo(models.Model):

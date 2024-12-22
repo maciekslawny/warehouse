@@ -1319,7 +1319,7 @@
             <li class="nav-item dropdown pe-3">
 
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-<!--                    <img src="{% static 'flightfinder/assets/img/profile-img.jpg' %}">-->
+                    <img src="{% static 'warehouse/assets/img/blank-head.png' %}">
                     <span class="d-none d-md-block dropdown-toggle ps-2">{{ user.email }}</span>
                 </a><!-- End Profile Iamge Icon -->
 
@@ -1374,24 +1374,22 @@
 
 
         <li class="nav-heading">OPERACJE</li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#operation-tables-nav" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-layout-text-window-reverse"></i><span>Lista Operacji</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="operation-tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-              <li>
-                <a href="/operacje/moje">
-                  <i class="bi bi-circle"></i><span>Moje Operacje</span>
-                </a>
 
-              </li>
-              <li>
-                <a href="/operacje/wszystkie">
-                  <i class="bi bi-circle"></i><span>Wszystkie Operacje</span>
-                </a>
-              </li>
-            </ul>
-        </li><!-- End Tables Nav -->
+
+
+
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/operacje/moje">
+          <i class="bi bi-layout-text-window-reverse"></i>
+          <span>Lista Operacji</span>
+        </a>
+      </li><!-- End Profile Page Nav -->
+
+
+
+
+
 
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#operation-calendar-nav" data-bs-toggle="collapse" href="#">
@@ -1416,7 +1414,7 @@
         <li class="nav-heading">Statystyki</li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="/operacje/dzien">
+        <a class="nav-link collapsed" href="/statystyki">
           <i class="bi bi-graph-up-arrow"></i>
           <span>Statystyki przeładunków</span>
         </a>
@@ -1428,13 +1426,13 @@
 
       </li><!-- End Profile Page Nav -->
         <li class="nav-item">
-        <a class="nav-link collapsed" href="/uzytkownicy">
+        <a class="nav-link collapsed" href="/komunikaty">
           <i class="bi bi-chat-left-dots"></i>
           <span>Komunikaty</span>
         </a>
       </li><!-- End Profile Page Nav -->
                 <li class="nav-item">
-        <a class="nav-link collapsed" href="/uzytkownicy">
+        <a class="nav-link collapsed" href="/alerty">
           <i class="bi bi-exclamation-triangle"></i>
           <span>Alerty / Dzień</span>
         </a>

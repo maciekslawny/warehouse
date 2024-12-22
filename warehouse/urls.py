@@ -23,5 +23,17 @@ urlpatterns = [
     path('zdjecie/usun/<int:photo_pk>', views.delete_photo, name='delete_photo'),
     path('uzytkownicy', views.accounts, name='uzytkownicy'),
     path('generuj-raport', views.generate_pdf, name='generate_pdf'),
+    path('komunikaty', views.announcements, name='announcements'),
+    path('komunikaty/dodaj', views.announcement_add, name='add_announcement'),
+    path('komunikaty/edytuj/<int:announcement_pk>', views.announcement_edit, name='edit_announcement'),
+    path('komunikaty/usun/<int:announcement_pk>', views.announcement_delete, name='delete_announcement'),
+
+    path('alerty', views.day_alerts, name='day_alerts'),
+    path('alerty/dodaj', views.day_alert_add, name='add_day_alert'),
+    path('alerty/edytuj/<int:day_alert_pk>', views.day_alert_edit, name='edit_day_alert'),
+    path('alerty/usun/<int:day_alert_pk>', views.day_alert_delete, name='delete_day_alert'),
+
+    path('statystyki', views.statistics, name='statistics'),
+
 
 ]
