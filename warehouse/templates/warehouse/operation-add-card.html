@@ -1,0 +1,61 @@
+
+
+
+                                <form class="row g-3" method="POST" action="/operacje/dodaj">
+                                     {% csrf_token %}
+                                    <div class="col-md-4">
+                                        <label for="inputEmail4" class="form-label">Numer spedycji *</label>
+                                        <input type="text" class="form-control" id="inputEmail4" name="spedition_number">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputState" class="form-label">Klient *</label>
+                                        <select name="customer" id="inputState" class="form-select">
+                                            <option selected>Wybierz...</option>
+                                            <option value="erie">Erie</option>
+                                            <option value="geti">Geti</option>
+                                            <option value="laktopol">Laktopol</option>
+                                            <option value="huzar">Huzar</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputState" class="form-label">Typ załadunku *</label>
+                                        <select name="operation_type" id="inputState" class="form-select">
+                                            <option selected>Wybierz...</option>
+                                            <option value="pallets_loading">Załadunek paletowy</option>
+                                            <option value="manual_loading">Załadunek ręczny</option>
+                                            <option value="unloading">Rozładunek</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="inputEmail4" class="form-label">Rozpoczecie operacji *</label>
+                                        <input name="start_date" value="{{ today_date }}T08:00" type="datetime-local" class="form-control" id="inputEmail4">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="inputEmail4" class="form-label">Zakończenie operacji *</label>
+                                        <input name="end_date" value="{{ today_date }}T10:00" type="datetime-local" class="form-control" id="inputEmail4">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="inputEmail4" class="form-label">CUT OFF CY</label>
+                                        <input name="cut_off" type="datetime-local" class="form-control" id="inputEmail4">
+                                    </div>
+                                       <div class="col-md-6">
+                                        <label for="inputState" class="form-label">Numer rampy *</label>
+                                        <select id="inputState" class="form-select" name="ramp_number">
+                                            <option selected>Wybierz...</option>
+                                            <option value="ramp1">Rampa 1</option>
+                                            <option value="ramp2">Rampa 2</option>
+                                            <option value="ramp3">Rampa 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="inputEmail4" class="form-label">Towar</label>
+                                        <input type="text" class="form-control" id="inputEmail4" name="cargo_name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="inputEmail4" class="form-label">Waga towaru</label>
+                                        <input type="number" class="form-control" id="inputEmail4" name="weight">
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                                    </div>
+                                </form>

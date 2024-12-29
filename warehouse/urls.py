@@ -12,6 +12,7 @@ urlpatterns = [
     path('operacje/moje', views.my_operations, name='my_operations'),
     path('operacje/wszystkie', views.all_operations, name='all_operations'),
     path('operacje/tydzien', views.operations_week, name='operations'),
+    path('operacje/tydzien/<int:input_year>/<int:input_week>', views.operations_week, name='operations-week'),
     path('operacje/wybor', views.operation_select_date, name='operation_select_date'),
     path('operacje/akceptacja/<int:operation_pk>', views.operation_acceptation, name='operation_acceptation'),
     path('operacje/akceptacja-cofniecie/<int:operation_pk>', views.operation_revoke_acceptation, name='operation_revoke_acceptation'),

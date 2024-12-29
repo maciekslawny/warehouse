@@ -26,8 +26,8 @@ class DayAlert(models.Model):
 
 class Operation(models.Model):
     OPERATION_CHOICES = [
-        ('pallets_loading', 'Załadunek paletowy'),
-        ('manual_loading', 'Załadunek ręczny'),
+        ('pallets_loading', 'Zał. paletowy'),
+        ('manual_loading', 'Zał. ręczny'),
         ('unloading', 'Rozładunek'),
     ]
     RAMP_CHOICES = [
@@ -74,7 +74,8 @@ class Operation(models.Model):
         verbose_name="Status"
     )
     spedition_number = models.CharField(max_length=15)
-
+    weight = models.IntegerField(blank=True, null=True)
+    cargo_name = models.CharField(max_length=48, blank=True, null=True)
     customer = models.CharField(
         max_length=20,
         choices=CUSTOMER_CHOICES,

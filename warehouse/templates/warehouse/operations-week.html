@@ -4,6 +4,7 @@
 {% block content %}
 
 
+
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -229,13 +230,15 @@
                     </div>
 
                     <div class="card-body">
-                        <h5 class="card-title">Wybór daty</h5>
-                        <form class="row g-3" method="POST" action="/operacje/wybor">
+                        <h5 class="card-title">Wybór tygodnia</h5>
+                        <form class="row g-3" method="POST" action="/operacje/tydzien">
                                      {% csrf_token %}
                             <div class="col-6">
 
-                                <input value="{{ selected_day }}" name="selected_date" type="date" class="form-control" id="inputEmail4">
-                            </div>
+
+                            <input type="week" value="{{ selected_week }}" name="week_input" id="camp-week" class="form-control" required />
+
+                                </div>
                             <div class="col-6">
                                         <button type="submit" class="btn btn-primary">Wybierz</button>
                                     </div>
@@ -267,15 +270,33 @@
                         <h5 class="card-title">Zarządzanie</h5>
 
 
-                                                    <div class="" >
+                        <div class="" >
 
-                            <a href="/operacje/dodaj" class="btn btn-primary">Dodaj operację</a>
+                            <button href="/operacje/dodaj" data-bs-toggle="modal" data-bs-target="#exampleModal-dodaj" class="btn btn-primary">Dodaj operację</button>
 
                             <a href="/generuj-raport" class="btn btn-primary">Pobierz raport</a>
 
                         </div>
 
 
+<!-- Modal Dodaj -->
+<div class="modal fade" id="exampleModal-dodaj" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Dodaj operację</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% include "warehouse/operation-add-card.html" %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

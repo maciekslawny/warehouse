@@ -259,26 +259,69 @@ def all_operations(request):
 
     return render(request, 'warehouse/all-operations.html', context)
 
+
+
+def get_monday(year, week):
+    # Ustal pierwszy dzień tygodnia zgodnie z ISO-8601
+    # Monday (1) = pierwszy dzień tygodnia
+    first_day = datetime.strptime(f"{year}-1-1", "%Y-%m-%d")
+    first_weekday = first_day.isoweekday()
+
+    # Sprawdź, czy pierwszy tydzień ma >= 4 dni w danym roku
+    if first_weekday <= 4:  # Tydzień zaczyna się od tego roku
+        delta_days = (week - 1) * 7 - (first_weekday - 1)
+    else:  # Tydzień zaczyna się od następnego tygodnia
+        delta_days = (week - 1) * 7 + (7 - first_weekday + 1)
+
+    # Oblicz datę poniedziałku
+    monday = first_day + timedelta(days=delta_days)
+    return monday
+
 @login_required
-def operations_week(request, input_date=datetime.now().strftime("%Y-%m-%d")):
-    input_date = datetime.strptime(input_date, '%Y-%m-%d').date()
-    print(input_date)
+def operations_week(request, input_year=None, input_week=None):
 
-    monday = datetime.strptime('2024-12-16', "%Y-%m-%d")
-    tuesday = datetime.strptime('2024-12-17', "%Y-%m-%d")
-    wednesday = datetime.strptime('2024-12-18', "%Y-%m-%d")
-    thursday = datetime.strptime('2024-12-19', "%Y-%m-%d")
-    friday = datetime.strptime('2024-12-20', "%Y-%m-%d")
 
-    context = {'operations_all': Operation.objects.filter(start_time__date__gte=monday, end_time__lte=friday),
-               'operations_monday': Operation.objects.filter(start_time__date=monday),
-               'operations_tuesday': Operation.objects.filter(start_time__date=tuesday),
-               'operations_wednesday': Operation.objects.filter(start_time__date=wednesday),
-               'operations_thursday': Operation.objects.filter(start_time__date=thursday),
-               'operations_friday': Operation.objects.filter(start_time__date=friday),
-               'selected_day': str(input_date),
+    if request.method == "POST":
+        print('TTRRR')
+        week_input = request.POST['week_input']
+        year, week = map(int, week_input.split('-W'))  # Parse year and week from input
+        print('INPUT WEEK:', week)
 
-               }
+        return redirect(f'/operacje/tydzien/{year}/{week}')
+
+    if not input_week or not input_year:
+        current_date = datetime.now()
+        year, week, _ = current_date.isocalendar()  # Zwraca tuple (rok, tydzień, dzień tygodnia)
+        print('week_input',week, year)
+    else:
+        year, week = int(input_year), int(input_week)
+
+
+    # Calculate Monday of the selected week
+    monday = get_monday(year, week)
+    tuesday = monday + timedelta(days=1)
+    wednesday = monday + timedelta(days=2)
+    thursday = monday + timedelta(days=3)
+    friday = monday + timedelta(days=4)
+
+    print('monday',monday, tuesday, wednesday, thursday, friday)
+
+    # Filter operations based on the selected week
+    context = {
+        'operations_all': Operation.objects.filter(start_time__date__gte=monday, end_time__date__lte=friday),
+        'operations_monday': Operation.objects.filter(start_time__date=monday),
+        'operations_tuesday': Operation.objects.filter(start_time__date=tuesday),
+        'operations_wednesday': Operation.objects.filter(start_time__date=wednesday),
+        'operations_thursday': Operation.objects.filter(start_time__date=thursday),
+        'operations_friday': Operation.objects.filter(start_time__date=friday),
+        'selected_week': f"{year}-W{week:02}",
+        'today_date': datetime.now().strftime("%Y-%m-%d")
+    }
+
+    print('friday', friday,  Operation.objects.filter(start_time__date=friday))
+
+
+
 
     return render(request, 'warehouse/operations-week.html', context)
 
@@ -327,8 +370,18 @@ def operation_add(request):
             cut_off = None
         operation_type = request.POST['operation_type']
         ramp_number = request.POST['ramp_number']
+        if request.POST['weight']:
+            weight = int(request.POST['weight'])
+        else:
+            weight = None
+        if request.POST['cargo_name']:
+            cargo_name = request.POST['cargo_name']
+        else:
+            cargo_name = None
+
+
         user = request.user
-        new_operation = Operation.objects.create(user = user, spedition_number=spedition_number, customer=customer, start_time=start_date, end_time=end_date, cut_off=cut_off, operation_type=operation_type, ramp_number=ramp_number)
+        new_operation = Operation.objects.create(user = user, spedition_number=spedition_number, customer=customer, start_time=start_date, end_time=end_date, cut_off=cut_off, operation_type=operation_type, ramp_number=ramp_number, weight=weight, cargo_name=cargo_name)
         new_operation.save()
         print('spedition_number:', spedition_number, 'start_date:', start_date)
 
@@ -360,6 +413,14 @@ def operation_edit(request, operation_pk):
             cut_off = None
         operation.cut_off = cut_off
         operation_type = request.POST['operation_type']
+        if request.POST['weight']:
+            operation.weight = int(request.POST['weight'])
+        else:
+            operation.weight = None
+        if request.POST['cargo_name']:
+            operation.cargo_name = request.POST['cargo_name']
+        else:
+            operation.cargo_name = None
         operation.operation_type = operation_type
         ramp_number = request.POST['ramp_number']
         operation.ramp_number = ramp_number
@@ -410,7 +471,18 @@ def operation_acceptation(request, operation_pk):
         operation.status = 'accepted'
         operation.save()
 
-        return redirect(f'/operacje/dzien/{operation.start_time.date()}')
+
+        previous_url = request.META.get('HTTP_REFERER', '')
+        print('previous_url', previous_url)
+
+        if 'tydzien' in previous_url:
+            print('taak tydzien')
+            year, week, _ = operation.start_time.isocalendar()  # Zwraca tuple (rok, tydzień, dzień tygodnia)
+            print('week_input', week, year)
+            return redirect(f'/operacje/tydzien/{year}/{week}')
+
+        else:
+            return redirect(f'/operacje/dzien/{operation.start_time.date()}')
 
     return redirect(f'/operacje/dzien')
 
@@ -422,7 +494,16 @@ def operation_revoke_acceptation(request, operation_pk):
         operation.status = 'pending'
         operation.save()
 
-        return redirect(f'/operacje/dzien/{operation.start_time.date()}')
+        previous_url = request.META.get('HTTP_REFERER', '')
+        print('previous_url', previous_url)
+
+        if 'tydzien' in previous_url:
+            year, week, _ = operation.start_time.isocalendar()
+            return redirect(f'/operacje/tydzien/{year}/{week}')
+
+        else:
+            return redirect(f'/operacje/dzien/{operation.start_time.date()}')
+
 
     return redirect(f'/operacje/dzien')
 

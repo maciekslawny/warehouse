@@ -91,6 +91,14 @@
                                             <option {% if operation.ramp_number == "ramp3" %}selected{% endif %} value="ramp3">Rampa 3</option>
                                         </select>
                                     </div>
+                                    <div class="col-md-6">
+                                        <label for="inputEmail4" class="form-label">Towar</label>
+                                        <input {% if operation.cargo_name %} value="{{ operation.cargo_name }}" {% endif %} type="text" class="form-control" id="inputEmail4" name="cargo_name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="inputEmail4" class="form-label">Waga towaru</label>
+                                        <input value="{{ operation.weight }}" type="number" class="form-control" id="inputEmail4" name="weight">
+                                    </div>
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-primary">Zapisz</button>
                                         <a href="/operacje/{{ operation.pk }}" class="btn btn-primary">Cofnij</a>

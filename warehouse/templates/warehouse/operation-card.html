@@ -72,7 +72,11 @@
                         </tr>
                         <tr>
                             <th scope="row"><b>Towar</b></th>
-                            <td colspan="2">Mleko w proszku</td>
+                            <td colspan="2">{% if operation.cargo_name %} {{ operation.cargo_name }} {% else %} - {% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>Waga</b></th>
+                            <td colspan="2">{% if operation.weight %} {{ operation.weight }} {% else %} - {% endif %}</td>
                         </tr>
                         <tr>
                             <th scope="row"><b>Notatka</b></th>
