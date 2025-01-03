@@ -105,7 +105,7 @@
                                         <td><a href="/operacje/{{ operation.pk }}">{{ operation.spedition_number }}</a></td>
                                         <td>{{ operation.get_customer_display }}</td>
                                         <td>{{ operation.get_ramp_number_display }}</td>
-                                        <td>Maciej Sławnicki</td>
+                                        <td>{{ operation.user.first_name }} {{ operation.user.last_name }}</td>
                                         <th scope="row">{{ operation.cut_off|date:"Y-m-d" }} <b> {{ operation.cut_off|date:"H:i" }}</b></th>
                                         <td>{{ operation.get_operation_type_display }}</td>
 

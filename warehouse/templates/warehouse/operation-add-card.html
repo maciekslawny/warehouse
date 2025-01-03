@@ -1,11 +1,20 @@
+<!-- Modal Dodaj -->
+<div class="modal fade" id="exampleModal-dodaj" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Dodaj operację</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
+                         <div class="modal-body">
 
 
                                 <form class="row g-3" method="POST" action="/operacje/dodaj">
                                      {% csrf_token %}
                                     <div class="col-md-4">
-                                        <label for="inputEmail4" class="form-label">Numer spedycji *</label>
-                                        <input type="text" class="form-control" id="inputEmail4" name="spedition_number">
+                                        <label  for="inputEmail4" class="form-label">Numer spedycji *</label>
+                                        <input required type="text" class="form-control" id="inputEmail4" name="spedition_number">
                                     </div>
                                     <div class="col-md-4">
                                         <label for="inputState" class="form-label">Klient *</label>
@@ -40,8 +49,7 @@
                                     </div>
                                        <div class="col-md-6">
                                         <label for="inputState" class="form-label">Numer rampy *</label>
-                                        <select id="inputState" class="form-select" name="ramp_number">
-                                            <option selected>Wybierz...</option>
+                                        <select required id="inputState" class="form-select" name="ramp_number">
                                             <option value="ramp1">Rampa 1</option>
                                             <option value="ramp2">Rampa 2</option>
                                             <option value="ramp3">Rampa 3</option>
@@ -55,7 +63,14 @@
                                         <label for="inputEmail4" class="form-label">Waga towaru</label>
                                         <input type="number" class="form-control" id="inputEmail4" name="weight">
                                     </div>
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-primary">Dodaj</button>
-                                    </div>
-                                </form>
+                  <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+        <button type="submit" class="btn btn-primary">Dodaj</button>
+      </div>
+</form>
+                        </div>
+
+
+    </div>
+  </div>
+</div>

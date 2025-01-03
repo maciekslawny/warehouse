@@ -14,16 +14,23 @@
     </div>
 
     <div class="card-body pb-0">
-        <h5 class="card-title">Roboczogodziny <span>| Dzisiaj</span></h5>
+        <h5 class="card-title">Roboczogodziny <span>| Dzisiaj </span></h5>
 
                   <!-- Pie Chart -->
               <div id="pieChart" style="min-height: 400px;" class="echart"></div>
 
               <script>
+                    const colorMap = {
+                      'Zał. ręczny': '#fa8176', // Czerwony
+                      'Zał. paletowy': '#33aaff', // Zielony
+                      'Rozładunek': '#ecc062', // Niebieski
+                      'other': '#f4ca63' // Żółty (domyślny kolor dla nieznanych kluczy)
+                    };
+
                 document.addEventListener("DOMContentLoaded", () => {
                   echarts.init(document.querySelector("#pieChart")).setOption({
                     title: {
-                      text: 'Wolne - 2H',
+                      text: 'Wolne: {{ man_hour_chart.remaining }} min',
                       subtext: 'Roboczogodziny',
                       left: 'center'
                     },
@@ -39,23 +46,26 @@
                       type: 'pie',
                       radius: '60%',
                       data: [
+
+
                         {
-                          value: 2,
-                          name: 'Zał. ręczne'
+                          value: {{ man_hour_chart.remaining }},
+                          name: 'Wolne',
+                            itemStyle: {
+                          color: '#67d167' // Zielony kolor dla "Wolne"
+                            }
                         },
+                        {% for key, value in man_hour_chart.types.items %}
                         {
-                          value: 1,
-                          name: 'Wolne'
-                        },
-                                                  {
-                          value: 1,
-                          name: 'Rozładunki'
-                        },
-                        {
-                          value: 2,
-                          name: 'Zał. paletowe'
+                          value: {{ value }},
+                          name: '{{ key }}',
+                          itemStyle: {
+                          color: colorMap['{{ key }}'] || colorMap['other'] // Kolor z mapy lub domyślny
                         }
+                        },
+                        {% endfor %}
                       ],
+
                       emphasis: {
                         itemStyle: {
                           shadowBlur: 10,

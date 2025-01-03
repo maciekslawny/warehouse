@@ -22,6 +22,8 @@ from reportlab.lib.units import cm
 from .models import Operation
 from django.utils import timezone
 
+from .utils import calculate_man_hours
+
 
 @login_required
 def home(request):
@@ -221,6 +223,8 @@ def operations(request, input_date=None):
     alerts = DayAlert.objects.filter(date=input_date)
     print('alerts',alerts)
 
+    man_hour_chart = calculate_man_hours(input_date)
+
 
 
     context = {'operations_all': Operation.objects.filter(start_time__date=input_date),
@@ -229,6 +233,8 @@ def operations(request, input_date=None):
                'operations_ramp3': Operation.objects.filter(start_time__date=input_date, ramp_number='ramp3'),
                'alerts': alerts,
                'selected_day': str(input_date),
+               'today_date': datetime.now().strftime("%Y-%m-%d"),
+               'man_hour_chart': man_hour_chart
 
 
                }
@@ -384,6 +390,16 @@ def operation_add(request):
         new_operation = Operation.objects.create(user = user, spedition_number=spedition_number, customer=customer, start_time=start_date, end_time=end_date, cut_off=cut_off, operation_type=operation_type, ramp_number=ramp_number, weight=weight, cargo_name=cargo_name)
         new_operation.save()
         print('spedition_number:', spedition_number, 'start_date:', start_date)
+
+        previous_url = request.META.get('HTTP_REFERER', '')
+        if 'tydzien' in previous_url:
+            print('taak tydzien')
+            year, week, _ = new_operation.start_time.isocalendar()  # Zwraca tuple (rok, tydzień, dzień tygodnia)
+            print('week_input', week, year)
+            return redirect(f'/operacje/tydzien/{year}/{week}')
+
+        else:
+            return redirect(f'/operacje/dzien/{new_operation.start_time.date()}')
 
     return render(request, 'warehouse/operation-add.html', context)
 

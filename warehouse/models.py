@@ -82,6 +82,7 @@ class Operation(models.Model):
         verbose_name="Klient"
     )
 
+
     def get_operation_duration(self):
         # Sprawdź, czy end_time jest naive i przypisz strefę czasową
         end_time = self.end_time
@@ -116,3 +117,19 @@ class Photo(models.Model):
 
     def __str__(self):
         return f"Photo {self.id}"
+
+
+class ManHour(models.Model):
+    MAN_HOUR_TYPE_CHOICES = [
+        ('standard', 'Standardowy'),
+        ('exceptional', 'Wyjątkowy'),
+    ]
+    minutes_amount = models.IntegerField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    man_hour_type = models.CharField(
+        max_length=20,
+        choices=MAN_HOUR_TYPE_CHOICES,
+        verbose_name="man_hour_type",
+        default='standard',
+    )
