@@ -121,21 +121,21 @@
                                     <tbody>
                                     {% for operation in operations %}
                                     <tr>
-                                        <th scope="row">{{ operation.start_time|date:"Y-m-d" }} <b> {{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></th>
+                                        <th scope="row"><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.start_time|date:"Y-m-d" }} <b> {{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></a></th>
 
-                                        <td><a href="/operacje/{{ operation.pk }}">{{ operation.spedition_number }}</a></td>
-                                        <td>{{ operation.get_customer_display }}</td>
-                                        <td>{{ operation.get_ramp_number_display }}</td>
-                                        <td>{{ operation.user.first_name }} {{ operation.user.last_name }}</td>
-                                        <th scope="row">{{ operation.cut_off|date:"Y-m-d" }} <b> {{ operation.cut_off|date:"H:i" }}</b></th>
-                                        <td>{{ operation.get_operation_type_display }}</td>
+                                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.spedition_number }}</a></td>
+                                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_customer_display }}</a></td>
+                                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_ramp_number_display }}</a></td>
+                                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.user.first_name }} {{ operation.user.last_name }}</a></td>
+                                        <th scope="row"><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.cut_off|date:"Y-m-d" }} <b> {{ operation.cut_off|date:"H:i" }}</b></a></th>
+                                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_operation_type_display }}</a></td>
 
-                                        <td><span class="badge
+                                        <td><a class="text-reset" href="/operacje/{{ operation.id }}"><span class="badge
                                             {% if operation.status == 'pending' %}bg-warning
                                             {% elif operation.status == 'accepted' %}bg-success
                                             {% endif %}">
                                             {{ operation.get_status_display }}
-                                        </span></td>
+                                        </span></a></td>
                                     </tr>
                                     {% endfor %}
 
