@@ -136,3 +136,10 @@ AUTH_USER_MODEL = 'warehouse.CustomUser'
 LOGIN_URL = '/zaloguj'
 LOGIN_REDIRECT_URL = '/'  # URL po zalogowaniu
 LOGOUT_REDIRECT_URL = '/zaloguj'  # URL po wylogowaniu
+
+
+# Zaufane źródła dla CSRF
+CSRF_TRUSTED_ORIGINS = [
+    'https://nautiquswms.pl',
+    'https://www.nautiquswms.pl',
+]
