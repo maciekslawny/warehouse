@@ -82,7 +82,28 @@
 
                             <div class="card-body">
                                 <h5 class="card-title">Lista wszystkich operacji <span>| Wszystkie</span></h5>
-
+                                <form class="row g-3" method="POST" action="/lista-operacji/filtruj">
+                                     {% csrf_token %}
+                                <div class="d-flex align-items-center gap-3 ms-2">
+                                    <div class="form-check">
+                                        <input name="show_only_mine" class="form-check-input" type="checkbox" {% if show_only_mine %}checked {% endif %}  id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Tylko moje
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input name="show_only_future" class="form-check-input" type="checkbox" {% if show_only_future %}checked {% endif %} id="flexCheckChecked">
+                                        <label class="form-check-label" for="flexCheckChecked">
+                                            Tylko przyszłe
+                                        </label>
+                                    </div>
+                                    <select class="col-2" class="form-select" name="operation_status">
+                                        <option {% if not operation_status %} selected {% endif %} value="all">Wszystkie statusy</option>
+                                        <option {% if operation_status == 'accepted' %} selected {% endif %} value="accepted">Zaakceptowane</option>
+                                        <option {% if operation_status == 'pending' %} selected {% endif %} value="pending">Do akceptacji</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary btn-sm">Wybierz</button>
+                                </div>
                                 <table class="table table-borderless datatable">
                                     <thead>
                                     <tr>
@@ -98,7 +119,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for operation in operations_all %}
+                                    {% for operation in operations %}
                                     <tr>
                                         <th scope="row">{{ operation.start_time|date:"Y-m-d" }} <b> {{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></th>
 

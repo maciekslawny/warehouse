@@ -12,7 +12,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index-panel.html">Główna</a></li>
-                <li class="breadcrumb-item active">Operacje magazynowe - Plan dnia</li>
+                <li class="breadcrumb-item active">Operacje magazynowe - Plan tygodnia</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -43,7 +43,7 @@
                             </div>
 
                             <div class="card-body">
-                                <h5 class="card-title">Plan dnia <span>| {{ selected_day }}</span></h5>
+                                <h5 class="card-title">Plan tygodnia <span>| {{ week_days.monday|date:"d/m" }} - {{ week_days.friday|date:"d/m" }}</span></h5>
 
                                 <div class="cd-schedule cd-schedule--loading margin-top-lg margin-bottom-lg js-cd-schedule">
                                     <div class="cd-schedule__timeline">
@@ -73,7 +73,7 @@
                                     <div class="cd-schedule__events">
                                         <ul>
                                             <li class="cd-schedule__group">
-                                                <div class="cd-schedule__top-info"><span><b>Poniedziałek 16-12</b></span></div>
+                                                <div class="cd-schedule__top-info"><span><b>Poniedziałek {{ week_days.monday|date:"d/m" }}</b></span></div>
 
                                                 <ul>
 
@@ -84,7 +84,7 @@
                                                 </ul>
                                             </li>
                                             <li class="cd-schedule__group">
-                                                <div class="cd-schedule__top-info"><span><b>Wtorek 17-12</b></span></div>
+                                                <div class="cd-schedule__top-info"><span><b>Wtorek {{ week_days.tuesday|date:"d/m" }}</b></span></div>
 
                                                 <ul>
                                                     {% for operation in operations_tuesday %}
@@ -93,7 +93,7 @@
                                                 </ul>
                                             </li>
                                             <li class="cd-schedule__group">
-                                                <div class="cd-schedule__top-info"><span><b>Środa 18-12</b></span></div>
+                                                <div class="cd-schedule__top-info"><span><b>Środa {{ week_days.wednesday|date:"d/m" }}</b></span></div>
 
                                                 <ul>
                                                     {% for operation in operations_wednesday %}
@@ -102,7 +102,7 @@
                                                 </ul>
                                             </li>
                                             <li class="cd-schedule__group">
-                                                <div class="cd-schedule__top-info"><span><b>Czwartek 19-12</b></span></div>
+                                                <div class="cd-schedule__top-info"><span><b>Czwartek {{ week_days.thursday|date:"d/m" }}</b></span></div>
 
                                                 <ul>
                                                     {% for operation in operations_thursday %}
@@ -111,7 +111,7 @@
                                                 </ul>
                                             </li>
                                             <li class="cd-schedule__group">
-                                                <div class="cd-schedule__top-info"><span><b>Piątek 20-12</b></span></div>
+                                                <div class="cd-schedule__top-info"><span><b>Piątek {{ week_days.friday|date:"d/m" }}</b></span></div>
 
                                                 <ul>
                                                     {% for operation in operations_friday %}
@@ -174,32 +174,33 @@
 
                                 <table class="table table-borderless datatable">
                                     <thead>
-                                    <tr>
-                                        <th scope="col">Data</th>
-                                        <th scope="col">Spedycja</th>
-                                        <th scope="col">Rampa</th>
-                                        <th scope="col">Spedytor</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for operation in operations_all %}
-                                    <tr>
-                                        <th scope="row">{{ operation.end_time|date:"Y-m-d" }} <b> {{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></th>
-                                        <td>{{ operation.spedition_number }}</td>
-                                        <td><a href="#" class="text-primary">{{ operation.ramp_number }}</a></td>
-                                        <td>Maciej Sławnicki</td>
-
-                                        <td><span class="badge
+                      <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Spedycja</th>
+                        <th scope="col">Klient</th>
+                        <th scope="col">Typ</th>
+                        <th scope="col">Waga</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for operation in operations_all %}
+                      <tr>
+                        <th scope="row"><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.start_time|date:"Y-m-d" }} <b>{{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></a></th>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.spedition_number }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_customer_display }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_operation_type_display }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{% if operation.weight %}{{ operation.weight }} kg{% else %}-{% endif %}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}"><span class="badge
                                             {% if operation.status == 'pending' %}bg-warning
                                             {% elif operation.status == 'accepted' %}bg-success
                                             {% endif %}">
                                             {{ operation.get_status_display }}
-                                        </span></td>
-                                    </tr>
-                                    {% endfor %}
+                        </span></a></td>
+                      </tr>
+                      {% endfor %}
 
-                                    </tbody>
+                    </tbody>
                                 </table>
 
                             </div>
@@ -272,9 +273,9 @@
 
                         <div class="" >
 
-                            <button href="/operacje/dodaj" data-bs-toggle="modal" data-bs-target="#exampleModal-dodaj" class="btn btn-primary">Dodaj operację</button>
+                            <button href="/operacje/dodaj" data-bs-toggle="modal" data-bs-target="#exampleModal-dodaj" class="btn btn-primary mb-1">Dodaj operację</button>
 
-                            <a href="/generuj-raport" class="btn btn-primary">Pobierz raport</a>
+                            <a href="/{{ generate_report_link }}" class="btn btn-primary mb-1">Pobierz raport</a>
 
                         </div>
 

@@ -238,53 +238,28 @@
                         <th scope="col">Data</th>
                         <th scope="col">Spedycja</th>
                         <th scope="col">Klient</th>
-                        <th scope="col">Spedytor</th>
+                        <th scope="col">Typ</th>
+                        <th scope="col">Waga</th>
                         <th scope="col">Status</th>
                       </tr>
                     </thead>
                     <tbody>
+                      {% for operation in next_operations_table %}
                       <tr>
-                        <th scope="row">2024-12-11 12:00</th>
-                        <td>1234/MSL</td>
-                        <td><a href="#" class="text-primary">ERIE</a></td>
-                        <td>Maciej Sławnicki</td>
-                        <td><span class="badge bg-success">Zaakceptowane</span></td>
+                        <th scope="row"><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.start_time|date:"Y-m-d" }} <b>{{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></a></th>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.spedition_number }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_customer_display }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_operation_type_display }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{% if operation.weight %}{{ operation.weight }} kg{% else %}-{% endif %}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}"><span class="badge
+                                            {% if operation.status == 'pending' %}bg-warning
+                                            {% elif operation.status == 'accepted' %}bg-success
+                                            {% endif %}">
+                                            {{ operation.get_status_display }}
+                        </span></a></td>
                       </tr>
-                      <tr>
-                        <th scope="row">2024-12-11 12:00</th>
-                        <td>1234/MSL</td>
-                        <td><a href="#" class="text-primary">ERIE</a></td>
-                        <td>Maciej Sławnicki</td>
-                        <td><span class="badge bg-success">Zaakceptowane</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2024-12-11 12:00</th>
-                        <td>1234/MSL</td>
-                        <td><a href="#" class="text-primary">ERIE</a></td>
-                        <td>Maciej Sławnicki</td>
-                        <td><span class="badge bg-success">Zaakceptowane</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2024-12-11 12:00</th>
-                        <td>1234/MSL</td>
-                        <td><a href="#" class="text-primary">ERIE</a></td>
-                        <td>Maciej Sławnicki</td>
-                        <td><span class="badge bg-warning">Do akceptacji</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2024-12-11 12:00</th>
-                        <td>1234/MSL</td>
-                        <td><a href="#" class="text-primary">ERIE</a></td>
-                        <td>Maciej Sławnicki</td>
-                        <td><span class="badge bg-success">Zaakceptowane</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2024-12-11 12:00</th>
-                        <td>1234/MSL</td>
-                        <td><a href="#" class="text-primary">ERIE</a></td>
-                        <td>Maciej Sławnicki</td>
-                        <td><span class="badge bg-success">Zaakceptowane</span></td>
-                      </tr>
+                      {% endfor %}
+
                     </tbody>
                   </table>
 

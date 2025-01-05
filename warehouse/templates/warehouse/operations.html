@@ -166,41 +166,34 @@
                                 <h5 class="card-title">Lista operacji <span>| {{ selected_day }}</span></h5>
 
                                 <table class="table table-borderless datatable">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Data</th>
-
-                                        <th scope="col">Spedycja</th>
-                                        <th scope="col">Klient</th>
-                                        <th scope="col">Rampa</th>
-                                        <th scope="col">Spedytor</th>
-                                        <th scope="col">Cut off</th>
-                                        <th scope="col">Typ operacji</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for operation in operations_all %}
-                                    <tr>
-                                        <th scope="row">{{ operation.start_time|date:"Y-m-d" }} <b> {{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></th>
-
-                                        <td>{{ operation.spedition_number }}</td>
-                                        <td>{{ operation.get_customer_display }}</td>
-                                        <td><a href="#" class="text-primary">{{ operation.ramp_number }}</a></td>
-                                        <td>Maciej Sławnicki</td>
-                                        <th scope="row">{{ operation.cut_off|date:"Y-m-d" }} <b> {{ operation.cut_off|date:"H:i" }}</b></th>
-                                        <td>{{ operation.get_operation_type_display }}</td>
-
-                                        <td><span class="badge
+                                                                        <thead>
+                      <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Spedycja</th>
+                        <th scope="col">Klient</th>
+                        <th scope="col">Typ</th>
+                        <th scope="col">Waga</th>
+                        <th scope="col">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for operation in operations_all %}
+                      <tr>
+                        <th scope="row"><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.start_time|date:"Y-m-d" }} <b>{{ operation.start_time|date:"H:i" }} - {{ operation.end_time|date:"H:i" }}</b></a></th>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.spedition_number }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_customer_display }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.get_operation_type_display }}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}">{% if operation.weight %}{{ operation.weight }} kg{% else %}-{% endif %}</a></td>
+                        <td><a class="text-reset" href="/operacje/{{ operation.id }}"><span class="badge
                                             {% if operation.status == 'pending' %}bg-warning
                                             {% elif operation.status == 'accepted' %}bg-success
                                             {% endif %}">
                                             {{ operation.get_status_display }}
-                                        </span></td>
-                                    </tr>
-                                    {% endfor %}
+                        </span></a></td>
+                      </tr>
+                      {% endfor %}
 
-                                    </tbody>
+                    </tbody>
                                 </table>
 
                             </div>
@@ -272,7 +265,7 @@
 
                             <button href="/operacje/dodaj" data-bs-toggle="modal" data-bs-target="#exampleModal-dodaj" class="btn btn-primary">Dodaj operację</button>
 
-                            <a href="/generuj-raport" class="btn btn-primary">Pobierz raport</a>
+                            <a href="/{{ generate_report_link }}" class="btn btn-primary">Pobierz raport</a>
 
                         </div>
 

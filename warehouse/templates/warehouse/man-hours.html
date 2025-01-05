@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+{% load static %}
+{% static "" as staticUrl %}
+{% block content %}
+
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Alerty / Dzień</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index-panel.html">Główna</a></li>
+                <li class="breadcrumb-item active">Alerty / Dzień</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+
+            <!-- Left side columns -->
+            <div class="col-lg-8">
+                <div class="row">
+
+
+                    <!-- Recent Sales -->
+                    <div class="col-12">
+                        <div class="card recent-sales ">
+
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Filter</h6>
+                                    </li>
+
+                                    <li><a class="dropdown-item" href="#">Today</a></li>
+                                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title">Standardowe <span>| Wszystkie</span></h5>
+
+
+                                <table class="table table-striped">
+                                  <thead>
+                                    <tr class="bg-white">
+                                      <th scope="col">Data rozpoczęcia</th>
+                                      <th scope="col">Data zakończenia</th>
+                                      <th scope="col">Ilość roboczogodzin</th>
+                                      <th scope="col">Typ</th>
+                                      <th scope="col"></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  {% for man_hour in man_hours_standard %}
+                                    <tr>
+                                      <th scope="row">{{ man_hour.start_date|date:"Y-m-d" }}</th>
+                                      <th scope="row">{{ man_hour.end_date|date:"Y-m-d" }}</th>
+                                      <th scope="row">{{ man_hour.minutes_amount }} min</th>
+                                      <th scope="row">{{ man_hour.get_man_hour_type_display }}</th>
+                                        <td>
+                                            <a data-bs-toggle="modal" data-bs-target="#exampleModal-{{ man_hour.id }}" class="btn "><i class="bi bi-pencil-square"></i></a>
+
+                                            <a href="/roboczogodziny/usun/{{ man_hour.pk }}" class="btn "><i class="bi bi-trash"></i></a>
+                                        </td>
+                                    </tr>
+
+                                  <!-- Button trigger modal -->
+
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal-{{ man_hour.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edytuj</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+
+                                          <form class="row g-3" method="POST" action="/roboczogodziny/edytuj/{{ man_hour.id }}">
+                                              <div class="modal-body">
+                                                 {% csrf_token %}
+                                                <div class="col-md-12">
+                                                    <label for="start_date" class="form-label">Data rozpoczęcia</label>
+                                                    <input id="start_date" name="start_date" value="{{ man_hour.start_date|date:"Y-m-d" }}" type="date" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="end_date" class="form-label">Data zakończenia</label>
+                                                    <input id="end_date" name="end_date" value="{{ man_hour.end_date|date:"Y-m-d" }}" type="date" class="form-control" >
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <label for="minutes_amount" class="form-label">Ilość minut</label>
+                                                    <input type="number" value="{{ man_hour.minutes_amount }}" class="form-control" id="minutes_amount" name="minutes_amount" rows="3"></input>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="inputState" class="form-label">Typ *</label>
+                                                    <select required id="inputState" class="form-select" name="man_hour_type">
+                                                        <option {% if man_hour.man_hour_type == 'standard' %} selected {% endif %} value="standard">Standardowe</option>
+                                                        <option {% if man_hour.man_hour_type == 'exceptional' %} selected {% endif %} value="exceptional">Wyjątkowy</option>
+                                                    </select>
+                                                </div>
+                                              </div>
+
+
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                                                <button type="submit" class="btn btn-primary">Zapisz</button>
+                                              </div>
+                                          </form>
+                                        </div>
+                                      </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  {% endfor %}
+
+                                  </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div><!-- End Recent Sales -->
+
+
+
+
+                    <!-- Recent Sales -->
+                    <div class="col-12">
+                        <div class="card recent-sales ">
+
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Filter</h6>
+                                    </li>
+
+                                    <li><a class="dropdown-item" href="#">Today</a></li>
+                                    <li><a class="dropdown-item" href="#">This Month</a></li>
+                                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title">Wyjątkowe <span>| Wszystkie</span></h5>
+
+                                <table class="table table-striped">
+                                  <thead>
+                                    <tr class="bg-white">
+                                      <th scope="col">Data rozpoczęcia</th>
+                                      <th scope="col">Data zakończenia</th>
+                                      <th scope="col">Ilość roboczogodzin</th>
+                                      <th scope="col">Typ</th>
+                                      <th scope="col"></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  {% for man_hour in man_hours_exceptional %}
+                                    <tr>
+                                      <th scope="row">{{ man_hour.start_date|date:"Y-m-d" }}</th>
+                                      <th scope="row">{{ man_hour.end_date|date:"Y-m-d" }}</th>
+                                      <th scope="row">{{ man_hour.minutes_amount }} min</th>
+                                      <th scope="row">{{ man_hour.get_man_hour_type_display }}</th>
+                                        <td>
+                                            <a data-bs-toggle="modal" data-bs-target="#exampleModal-{{ man_hour.id }}" class="btn "><i class="bi bi-pencil-square"></i></a>
+
+                                            <a href="/roboczogodziny/usun/{{ man_hour.pk }}" class="btn "><i class="bi bi-trash"></i></a>
+                                        </td>
+                                    </tr>
+
+                                  <!-- Button trigger modal -->
+
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal-{{ man_hour.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edytuj Alert</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+
+                                          <form class="row g-3" method="POST" action="/roboczogodziny/edytuj/{{ man_hour.id }}">
+                                              <div class="modal-body">
+                                                 {% csrf_token %}
+                                                <div class="col-md-12">
+                                                    <label for="start_date" class="form-label">Data rozpoczęcia</label>
+                                                    <input id="start_date" name="start_date" value="{{ man_hour.start_date|date:"Y-m-d" }}" type="date" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="end_date" class="form-label">Data zakończenia</label>
+                                                    <input id="end_date" name="end_date" value="{{ man_hour.end_date|date:"Y-m-d" }}" type="date" class="form-control" >
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <label for="minutes_amount" class="form-label">Ilość minut</label>
+                                                    <input type="number" value="{{ man_hour.minutes_amount }}" class="form-control" id="minutes_amount" name="minutes_amount" rows="3"></input>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="inputState" class="form-label">Typ *</label>
+                                                    <select required id="inputState" class="form-select" name="man_hour_type">
+                                                        <option {% if man_hour.man_hour_type == 'standard' %} selected {% endif %} value="standard">Standardowe</option>
+                                                        <option {% if man_hour.man_hour_type == 'exceptional' %} selected {% endif %} value="exceptional">Wyjątkowy</option>
+                                                    </select>
+                                                </div>
+                                              </div>
+
+
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                                                <button type="submit" class="btn btn-primary">Zapisz</button>
+                                              </div>
+                                          </form>
+                                        </div>
+                                      </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                  {% endfor %}
+
+                                  </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div><!-- End Recent Sales -->
+
+
+
+                </div>
+            </div><!-- End Left side columns -->
+
+            <!-- Right side columns -->
+            <div class="col-lg-4">
+
+
+
+
+                <!-- Zarzadzanie -->
+                <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+
+                            <li><a class="dropdown-item" href="#">Today</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">Zarządzanie</h5>
+
+
+                            <div class="col-6">
+                                        <a data-bs-toggle="modal" data-bs-target="#exampleModal-dodaj" class="btn btn-primary">Dodaj nowy</a>
+                                    </div>
+
+<!-- Modal -->
+                                    <div class="modal fade" id="exampleModal-dodaj" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Dodaj Roboczogodziny</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+
+                                          <form class="row g-3" method="POST" action="/roboczogodziny/dodaj">
+                                              <div class="modal-body">
+                                                 {% csrf_token %}
+                                                <div class="col-md-12">
+                                                    <label for="inputEmail4" class="form-label">Data rozpoczęcia</label>
+                                                    <input name="start_date" type="date" class="form-control" >
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="inputEmail4" class="form-label">Data zakończenia</label>
+                                                    <input name="end_date" type="date" class="form-control" >
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <label for="inputEmail4" class="form-label">Ilość minut</label>
+                                                    <input type="number" class="form-control" id="minutes_amount" name="minutes_amount" rows="3"></input>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="inputState" class="form-label">Typ *</label>
+                                                    <select required id="inputState" class="form-select" name="man_hour_type">
+                                                        <option value="standard">Standardowe</option>
+                                                        <option value="exceptional">Wyjątkowy</option>
+                                                    </select>
+                                                </div>
+                                              </div>
+
+
+
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                                                <button type="submit" class="btn btn-primary">Dodaj</button>
+                                              </div>
+                                          </form>
+                                        </div>
+                                      </div>
+                                    </div>
+
+
+
+
+                    </div>
+                </div><!-- End Calendar -->
+
+
+
+
+
+            </div><!-- End Right side columns -->
+
+        </div>
+    </section>
+
+    <script src="{% static 'warehouse/time-shedule/assets/js/util.js' %}"></script>
+    <!-- util functions included in the CodyHouse framework -->
+    <script src="{% static 'warehouse/time-shedule/assets/js/main.js' %}"></script>
+
+
+
+
+<!--    <script src="{% static 'warehouse/calendar/js/jquery.min.js' %}"></script>-->
+<!--    <script src="{% static 'warehouse/calendar/js/popper.js' %}"></script>-->
+<!--    <script src="{% static 'warehouse/calendar/js/bootstrap.min.js' %}"></script>-->
+<!--    <script src="{% static 'warehouse/calendar/js/main.js' %}"></script>-->
+
+
+</main><!-- End #main -->
+{% endblock %}

@@ -22,11 +22,11 @@
 
                 <div class="activity-item d-flex">
 
-                      <div class="activite-label"><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.start_time|date:"d/m/Y" }} {{ operation.start_time|date:"H:i" }}</a></div>
+                      <div class="activite-label"><a class="text-reset" href="/operacje/{{ operation.id }}">{{ operation.start_time|date:"d/m" }} {{ operation.start_time|date:"H:i" }}</a></div>
                       <i class='bi bi-circle-fill activity-badge {% if operation.status == 'pending' %} text-warning {% elif operation.status == 'accepted' %} text-success {% endif %} align-self-start'></i>
                       <div class="activity-content">
                           <a class="text-reset" href="/operacje/{{ operation.id }}">
-                          {{ operation.get_operation_type_display }} <a href="#" class="fw-bold text-dark">{{ operation.get_customer_display }}</a>
+                          {{ operation.get_operation_type_display }} <b>{{ operation.get_customer_display }}</b> {% if operation.weight %} | {{ operation.weight }}kg{% endif %}
                         </a>
                       </div>
 

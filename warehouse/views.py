@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.shortcuts import render, redirect
-from .models import Operation, Photo, CustomUser, DayAlert, Announcement
+from .models import Operation, Photo, CustomUser, DayAlert, Announcement, ManHour
 from django.utils.dateparse import parse_datetime, parse_date
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -22,7 +22,7 @@ from reportlab.lib.units import cm
 from .models import Operation
 from django.utils import timezone
 
-from .utils import calculate_man_hours
+from .utils import calculate_man_hours, generate_pdf
 
 
 @login_required
@@ -48,6 +48,7 @@ def home(request):
 
 
     context = {
+        'next_operations_table': next_operations,
         'next_operations': next_operations[:5],
         'past_operations_amount': past_operations_amount,
         'next_operations_amount': next_operations_amount,
@@ -68,6 +69,71 @@ def statistics(request):
 
     }
     return render(request, 'warehouse/statistics.html', context)
+
+
+@login_required
+def reports(request):
+
+    if request.method == "POST":
+        start_date_str = request.POST['start_date']
+        start_date = parse_date(start_date_str)
+        end_date_str = request.POST['end_date']
+        end_date = parse_date(end_date_str)
+        customer = request.POST.get('customer', False)
+        if not customer or customer == "wszystko":
+            customer = None
+
+        operation_type = request.POST.get('operation_type', False)
+        if not operation_type or operation_type == "wszystko":
+            operation_type = None
+
+        status = request.POST.get('status', False)
+        if not status or status == "wszystko":
+            status = None
+
+        ramp_number = request.POST.get('ramp_number', False)
+        if not ramp_number or ramp_number == "wszystko":
+            ramp_number = None
+
+        user = request.POST.get('user', False)
+        if user == "mine":
+            user = request.user
+        else:
+            user = None
+
+        operations = Operation.objects.filter(start_time__date__gte=start_date, start_time__date__lte=end_date)
+
+        if customer:
+            operations = operations.filter(customer=customer)
+
+
+        if operation_type:
+            operations = operations.filter(operation_type=operation_type)
+
+        if status:
+            operations = operations.filter(status=status)
+
+        if ramp_number:
+            operations = operations.filter(ramp_number=ramp_number)
+
+        if user:
+            operations = operations.filter(user=user)
+
+        for operation in operations:
+            print('operation', operation.start_time , operation.customer, operation.operation_type, operation.status)
+
+
+        print(start_date, end_date, customer, operation_type, status, ramp_number, user)
+
+        operations = operations.order_by('start_time')
+
+
+        return generate_pdf(operations)
+
+    context = {
+
+    }
+    return render(request, 'warehouse/raports.html', context)
 
 
 
@@ -155,6 +221,58 @@ def announcement_add(request):
 
 
 @login_required
+def man_hours(request):
+    man_hours_standard = ManHour.objects.filter(man_hour_type='standard').order_by('-start_date')
+    man_hours_exceptional = ManHour.objects.filter(man_hour_type='exceptional').order_by('-start_date')
+
+    context = {'man_hours_standard': man_hours_standard,
+               'man_hours_exceptional': man_hours_exceptional,
+               }
+
+    return render(request, 'warehouse/man-hours.html', context)
+
+
+def man_hour_edit(request, man_hour_pk):
+    man_hour = ManHour.objects.get(pk=man_hour_pk)
+
+
+    if request.method == "POST":
+        man_hour.start_date = request.POST['start_date']
+        man_hour.end_date = request.POST['end_date']
+        man_hour.minutes_amount = request.POST['minutes_amount']
+        man_hour.man_hour_type = request.POST['man_hour_type']
+        man_hour.save()
+
+    context = {}
+
+
+    return redirect(f'/roboczogodziny')
+
+def man_hour_add(request):
+
+    if request.method == "POST":
+        man_hour_start_date = request.POST['start_date']
+        man_hour_end_date = request.POST['end_date']
+        man_hour_minutes_amount = request.POST['minutes_amount']
+        man_hour_man_hour_type = request.POST['man_hour_type']
+
+        man_hour = ManHour(start_date= man_hour_start_date,
+                                    end_date=man_hour_end_date, minutes_amount=man_hour_minutes_amount, man_hour_type= man_hour_man_hour_type)
+        man_hour.save()
+
+    context = {}
+
+
+    return redirect(f'/roboczogodziny')
+
+def man_hour_delete(request, man_hour_pk):
+    man_hour = ManHour.objects.get(pk=man_hour_pk)
+    man_hour.delete()
+
+    return redirect(f'/roboczogodziny')
+
+
+@login_required
 def day_alerts(request):
     day_alerts = DayAlert.objects.all().order_by('-date')
 
@@ -162,6 +280,7 @@ def day_alerts(request):
                }
 
     return render(request, 'warehouse/day-alerts.html', context)
+
 
 
 def day_alert_edit(request, day_alert_pk):
@@ -234,7 +353,8 @@ def operations(request, input_date=None):
                'alerts': alerts,
                'selected_day': str(input_date),
                'today_date': datetime.now().strftime("%Y-%m-%d"),
-               'man_hour_chart': man_hour_chart
+               'man_hour_chart': man_hour_chart,
+               'generate_report_link': f'raporty/generuj-raport/{input_date}/{input_date}',
 
 
                }
@@ -243,15 +363,73 @@ def operations(request, input_date=None):
 
 
 @login_required
-def my_operations(request):
+def operations_list(request, show_only_mine_input='wszystkie', show_only_future_input='wszystkie', operation_status_input='wszystkie'):
+
+    if show_only_mine_input == 'moje':
+        show_only_mine= True
+    else:
+        show_only_mine = False
+    if show_only_future_input == 'przyszle':
+        show_only_future = True
+    else:
+        show_only_future = False
+
+    if operation_status_input == 'zaakceptowane':
+        operation_status = 'accepted'
+        print('taaak')
+    elif operation_status_input == 'doakceptacji':
+        operation_status = 'pending'
+    else:
+        operation_status = False
+
+    operations = Operation.objects.all()
+
+    if show_only_mine:
+        operations = operations.filter(user=request.user)
+    if show_only_future:
+        operations = operations.filter(start_time__date__gte=datetime.now().strftime("%Y-%m-%d"))
+    if operation_status:
+        operations = operations.filter(status=operation_status)
 
 
-
-    context = {'operations_future': Operation.objects.filter(start_time__date__gte=datetime.now().strftime("%Y-%m-%d"), user=request.user),
-               'operations_all': Operation.objects.filter(user=request.user)
+    context = {
+               'operations': operations.order_by('-start_time'),
+                'show_only_mine': show_only_mine,
+                'show_only_future': show_only_future,
+                'operation_status': operation_status,
                }
 
-    return render(request, 'warehouse/my-operations.html', context)
+    return render(request, 'warehouse/operations-list.html', context)
+
+
+def operations_list_filter_select(request):
+    if request.method == "POST":
+
+        if request.POST.get('show_only_mine', False):
+            show_only_mine = 'moje'
+        else:
+            show_only_mine = 'wszystko'
+
+
+        if request.POST.get('show_only_future', False):
+            show_only_future = 'przyszle'
+        else:
+            show_only_future = 'wszystko'
+
+        operation_status = request.POST['operation_status']
+        if operation_status:
+            if operation_status == 'accepted':
+                operation_status = 'zaakceptowane'
+            elif operation_status == 'pending':
+                operation_status = 'doakceptacji'
+        else:
+            operation_status = 'wszystko'
+
+
+
+        return redirect(f'/lista-operacji/{show_only_mine}/{show_only_future}/{operation_status}')
+
+
 
 
 @login_required
@@ -312,6 +490,9 @@ def operations_week(request, input_year=None, input_week=None):
 
     print('monday',monday, tuesday, wednesday, thursday, friday)
 
+    week_days = {'monday': monday, 'tuesday': tuesday, 'wednesday': wednesday, 'thursday': thursday, 'friday': friday}
+
+
     # Filter operations based on the selected week
     context = {
         'operations_all': Operation.objects.filter(start_time__date__gte=monday, end_time__date__lte=friday),
@@ -321,7 +502,9 @@ def operations_week(request, input_year=None, input_week=None):
         'operations_thursday': Operation.objects.filter(start_time__date=thursday),
         'operations_friday': Operation.objects.filter(start_time__date=friday),
         'selected_week': f"{year}-W{week:02}",
-        'today_date': datetime.now().strftime("%Y-%m-%d")
+        'today_date': datetime.now().strftime("%Y-%m-%d"),
+        'generate_report_link': f'raporty/generuj-raport/{monday.date()}/{friday.date()}',
+        'week_days': week_days
     }
 
     print('friday', friday,  Operation.objects.filter(start_time__date=friday))
@@ -333,12 +516,13 @@ def operations_week(request, input_year=None, input_week=None):
 
 @login_required
 def operation_detail(request, operation_pk):
+    operation = Operation.objects.get(pk=operation_pk)
 
     if request.method == 'POST' and request.FILES.get('image'):
         image = request.FILES['image']
         Photo.objects.create(image=image)
 
-    photos = Photo.objects.filter(operation=Operation.objects.get(pk=operation_pk))
+    photos = Photo.objects.filter(operation=operation)
 
     if request.user.role == 'spedytor':
         next_operations = Operation.objects.filter(user=request.user,
@@ -348,11 +532,13 @@ def operation_detail(request, operation_pk):
         next_operations = Operation.objects.filter(start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
             'start_time')[:5]
 
-
+    year, week, _ = operation.start_time.date().isocalendar()
     context = {
-                'operation': Operation.objects.get(pk=operation_pk),
+                'operation': operation,
                 'photos': photos,
                 'next_operations': next_operations,
+                'day_url': f'/operacje/dzien/{operation.start_time.date()}',
+                'week_url': f'/operacje/tydzien/{year}/{week}',
                }
 
     return render(request, 'warehouse/operation-card.html', context)
@@ -444,11 +630,13 @@ def operation_edit(request, operation_pk):
 
         operation.save()
 
+        return redirect(f'/operacje/{operation.id}')
+
+
     context = {'today_date': datetime.now().strftime("%Y-%m-%d"),
                'operation': operation}
 
     return render(request, 'warehouse/operation-edit.html', context)
-
 
 
 def operation_select_date(request):
@@ -497,8 +685,10 @@ def operation_acceptation(request, operation_pk):
             print('week_input', week, year)
             return redirect(f'/operacje/tydzien/{year}/{week}')
 
-        else:
+        elif 'dzien' in previous_url:
             return redirect(f'/operacje/dzien/{operation.start_time.date()}')
+        else:
+            return redirect(f'/operacje/{operation.pk}')
 
     return redirect(f'/operacje/dzien')
 
@@ -517,8 +707,13 @@ def operation_revoke_acceptation(request, operation_pk):
             year, week, _ = operation.start_time.isocalendar()
             return redirect(f'/operacje/tydzien/{year}/{week}')
 
-        else:
+        elif 'dzien' in previous_url:
+
             return redirect(f'/operacje/dzien/{operation.start_time.date()}')
+
+        else:
+
+            return redirect(f'/operacje/{operation.pk}')
 
 
     return redirect(f'/operacje/dzien')
@@ -545,9 +740,12 @@ def upload_photos(request, operation_pk):
             max_size = (800, 800)
             image.thumbnail(max_size)
 
-            # Zapis obrazu do pamięci
+            # Sprawdź format obrazu (domyślnie używamy formatu obrazu)
+            image_format = image.format if image.format else 'JPEG'
+
+            # Zapis obrazu do pamięci w odpowiednim formacie
             buffer = BytesIO()
-            image.save(buffer, format='JPEG')
+            image.save(buffer, format=image_format)  # Użyj odpowiedniego formatu
             buffer.seek(0)
 
             # Zapisz obraz w modelu
@@ -569,86 +767,14 @@ def delete_photo(request, photo_pk):
     return redirect(f'/operacje/{operation_pk}')
 
 
-def generate_pdf(request):
-    # Ustawienie odpowiedzi jako PDF
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="zestawienie_operacji.pdf"'
+def generate_report_view(request, input_start_date, input_end_date):
+    start_date = parse_date(input_start_date)
+    end_date = parse_date(input_end_date)
+    operations = Operation.objects.filter(start_time__date__gte=start_date, start_time__date__lte=end_date).order_by('start_time')
+    print('operations', operations)
+    return generate_pdf(operations)
+    previous_url = request.META.get('HTTP_REFERER', '')
 
-    # Tworzenie dokumentu PDF (pionowe A4)
-    doc = SimpleDocTemplate(response, pagesize=A4, topMargin=1 * cm, bottomMargin=1 * cm, leftMargin=1 * cm,
-                            rightMargin=1 * cm)
-    elements = []
-
-    # Style
-    styles = getSampleStyleSheet()
-    title_style = styles['Title']
-    title_style.fontSize = 20
-    title_style.alignment = 1  # Wyśrodkowanie
-
-    subtitle_style = styles['Heading2']
-    subtitle_style.fontSize = 12
-    subtitle_style.alignment = 1  # Wyśrodkowanie
-
-    # Dodanie dużego nagłówka
-    title = Paragraph("Zestawienie operacji zaladunkowych i wyladunkowych", title_style)
-    elements.append(title)
-    elements.append(Spacer(1, 20))
-
-    # Pobieranie danych z modelu Operation
-    operations = Operation.objects.order_by('start_time')  # Sortowanie po czasie rozpoczęcia
-
-    # Grupowanie operacji według daty
-    grouped_operations = {}
-    for operation in operations:
-        operation_date = operation.start_time.date()
-        if operation_date not in grouped_operations:
-            grouped_operations[operation_date] = []
-        grouped_operations[operation_date].append(operation)
-
-    # Generowanie tabelek dla każdej daty
-    for date, operations in grouped_operations.items():
-        # Nagłówek daty
-        subtitle = Paragraph(f"Data: {date}", subtitle_style)
-        elements.append(subtitle)
-        elements.append(Spacer(1, 10))
-
-        # Przygotowanie danych do tabeli
-        data = [
-            ['Start', 'Koniec', 'Typ', 'Klient', 'Rampa', 'Status']
-        ]
-        for operation in operations:
-            data.append([
-                operation.start_time.strftime('%H:%M'),
-                operation.end_time.strftime('%H:%M'),
-                dict(Operation.OPERATION_CHOICES).get(operation.operation_type, 'N/A'),
-                dict(Operation.CUSTOMER_CHOICES).get(operation.customer, 'N/A'),
-                dict(Operation.RAMP_CHOICES).get(operation.ramp_number, 'N/A'),
-                dict(Operation.STATUS_CHOICES).get(operation.status, 'N/A'),
-            ])
-
-        # Tworzenie tabeli
-        col_widths = [2.5 * cm, 2.5 * cm, 4 * cm, 4 * cm, 2.5 * cm, 3 * cm]  # Szerokości kolumn
-        table = Table(data, colWidths=col_widths)
-        style = TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),  # Tło nagłówka tabeli
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),  # Tekst w nagłówku
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Wyśrodkowanie tekstu
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Pogrubiony nagłówek
-            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),  # Zwykły tekst
-            ('FONTSIZE', (0, 0), (-1, -1), 8),  # Mniejszy rozmiar czcionki
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 6),  # Odstępy w nagłówku
-            ('VALIGN', (0, 1), (-1, -1), 'MIDDLE'),  # Wyrównanie pionowe
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),  # Siatka tabeli
-        ])
-        table.setStyle(style)
-
-        # Dodanie tabeli do dokumentu
-        elements.append(table)
-        elements.append(Spacer(1, 15))  # Odstęp między tabelkami
-
-    # Budowanie dokumentu
-    doc.build(elements)
-
-    return response
+    return redirect(previous_url)
 
 
