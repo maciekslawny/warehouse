@@ -49,7 +49,7 @@ def home(request):
 
     context = {
         'next_operations_table': next_operations,
-        'next_operations': next_operations[:5],
+        'next_operations': next_operations[:10],
         'past_operations_amount': past_operations_amount,
         'next_operations_amount': next_operations_amount,
         'pending_operations_amount': pending_operations_amount,
@@ -527,16 +527,16 @@ def operation_detail(request, operation_pk):
     if request.user.role == 'spedytor':
         next_operations = Operation.objects.filter(user=request.user,
                                                    start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
-            'start_time')[:5]
+            'start_time')
     else:
         next_operations = Operation.objects.filter(start_time__date__gte=datetime.now().strftime("%Y-%m-%d")).order_by(
-            'start_time')[:5]
+            'start_time')
 
     year, week, _ = operation.start_time.date().isocalendar()
     context = {
                 'operation': operation,
                 'photos': photos,
-                'next_operations': next_operations,
+                'next_operations': next_operations[:10],
                 'day_url': f'/operacje/dzien/{operation.start_time.date()}',
                 'week_url': f'/operacje/tydzien/{year}/{week}',
                }
