@@ -186,9 +186,9 @@
                                 {% csrf_token %}
                                   <div class="mb-3 d-flex align-items-center">
     <!-- Pole wyboru pliku -->
-    <div class="me-3">
-        <input type="file" id="image" name="image" multiple class="form-control">
-    </div>
+ <div class="me-3">
+                <input type="file" id="image" name="image" multiple class="form-control" accept="image/*" capture="environment">
+            </div>
     <!-- Przycisk przesyłania -->
     <button type="submit" class="btn btn-primary">Prześlij zdjęcia</button>
 </div>
