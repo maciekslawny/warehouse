@@ -143,3 +143,5 @@ CSRF_TRUSTED_ORIGINS = [
     'https://nautiquswms.pl',
     'https://www.nautiquswms.pl',
 ]
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
